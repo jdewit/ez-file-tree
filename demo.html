@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <link href="dist/ez-file-tree.min.css" rel="stylesheet">
+
+  <style>
+    a i {
+     padding-right: 5px; 
+    }
+  </style>
+
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//code.angularjs.org/1.2.0-rc.2/angular.js"></script>
+
+  <script src="src/js/ez-file-tree.js"></script>
+  <script>
+    angular.module('myApp', ['ez.fileTree'])
+
+      .controller('RootCtrl', ['$scope', 'EzFileTreeConfig', function($scope, EzFileTreeConfig) {
+
+        EzFileTreeConfig.checking = true;
+
+        $scope.folder = {
+          id: 'root',
+          name: 'Root',
+          type: "folder",
+          children: [
+            {
+              id: "Folder 1",
+              name: "1",
+              type: "folder",
+              children: [
+                {
+                  id: "Folder 1a",
+                  name: "1a",
+                  type: "folder",
+                  children: [
+                    {
+                      id: "1a1",
+                      name: "1a1"
+                    },
+                    {
+                      id: "1a2",
+                      name: "1a2",
+                      type: "folder"
+                    },
+                    {
+                      id: "1a2",
+                      name: "1a2"
+                    }
+                  ]
+                },
+                {
+                  id: "1b",
+                  name: "1b"
+                },
+                {
+                  id: "1c",
+                  name: "1c"
+                }
+              ]
+            },
+            {
+              id: "Folder 2",
+              name: "2",
+              type: "folder",
+              children: [
+                {
+                  id: "2a",
+                  name: "2a",
+                  type: "folder",
+                  children: [
+                    {
+                      id: "2a1",
+                      name: "2a1"
+                    },
+                    {
+                      id: "2a2",
+                      name: "2a2"
+                    },
+                    {
+                      id: "2a2",
+                      name: "2a2"
+                    }
+                  ]
+                },
+                {
+                  id: "2b",
+                  name: "2b"
+                },
+                {
+                  id: "2c",
+                  name: "2c"
+                }
+              ]
+            },
+          ]
+        };
+
+
+        // custom get children method
+        $scope.getChildren = function(file) {
+          file.children = [{name: 'File loaded from root ctrl'}, {name: 'other file loaded from root ctl'}];
+        };
+
+      }])
+
+      .filter('stringify', function() {
+        return function(ob) {
+          return JSON.stringify(ob, undefined, 4);
+        };
+      })
+    ;
+  </script>
+</head>
+
+  <body ng-app="myApp">
+    <div ng-controller="RootCtrl">
+
+      <table style="width: 100%;">
+        <tr>
+          <td style="width: 40%; vertical-align: top;">
+            <div ez-file-tree="folder"></div>
+          </td>
+          <td>
+            <pre style="font-size: 10px;">{{ folder | stringify }}</pre>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+
+</html>
