@@ -9,6 +9,8 @@ $ bower install ez-file-tree
 
 ##Demo
 
+http://plnkr.co/edit/fZN0Dx?p=preview
+
 ##Configure
 
 Some things such as the icon classes are configurable, just override the EzFileTreeConfig constant.
