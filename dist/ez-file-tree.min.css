@@ -17,6 +17,9 @@
 }
 .ez-file-tree li {
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .ez-file-tree .folder-toggle i {
   margin-left: -5px;

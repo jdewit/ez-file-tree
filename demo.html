@@ -126,6 +126,8 @@
       <tr>
         <td style="width: 40%; vertical-align: top;">
           <div ez-file-tree="folder"></div>
+          <hr>
+          Selected File: {{ folder._selectedFile | stringify }}
         </td>
         <td>
           <pre style="font-size: 10px;">{{ folder | stringify }}</pre>

@@ -95,12 +95,29 @@
         };
 
         scope.select = function(item) {
-          console.log(multiSelect);
-          if (multiSelect === false && !item._selected) {
-            unselectAll(scope.folder[childrenField]);
-          }
+          console.log('select');
+          if (item._selected) {
 
-          item._selected = !item._selected;
+            item._selected = false;
+
+            if (multiSelect) {
+              scope.folder._selectedFiles.splice(scope.folder._selectedFiles.indexOf(item), 1);
+            } else {
+              scope.folder._selectedFile = null;
+            }
+
+          } else {
+
+            if (multiSelect) {
+              scope.folder._selectedFiles.push(item);
+            } else {
+              scope.folder._selectedFile = item;
+              unselectAll(scope.folder[childrenField]);
+            }
+
+            item._selected = true;
+
+          }
         };
 
         scope.toggle = function(e, item) {
