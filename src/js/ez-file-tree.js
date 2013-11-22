@@ -117,7 +117,7 @@
         };
 
         scope.isFolder = function(item) {
-          return (item[childrenField] || item.type === 'folder');
+          return (item.type === 'folder' || item.type === 'album');
         };
 
         var newElement = angular.element(template);
