@@ -2,7 +2,7 @@
   "name": "ez-file-tree",
   "description": "Angular file tree directive",
   "keywords": [],
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "author": "Joris de Wit",
   "repository": {
