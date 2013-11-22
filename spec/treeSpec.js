@@ -7,7 +7,10 @@ describe('ez-file-tree', function() {
       scope = $rootScope;
 
       el = angular.element(
-        '<div id="fileTree" data-ez-file-tree="folder"</div>'
+        '<div id="fileTree" data-ez-file-tree="folder"></div>'
+      );
+      el2 = angular.element(
+        '<div id="fileTree2" data-ez-file-tree="folder" data-checking="true" data-multi-select="true"></div>'
       );
 
       scope.folder = {
@@ -78,10 +81,15 @@ describe('ez-file-tree', function() {
               }
             ]
           },
+          {
+            id: "bla",
+            name: "File on root",
+          }
         ]
       };
 
       $compile(el)(scope);
+      $compile(el2)(scope);
       scope.$digest();
 
   }));
@@ -91,9 +99,10 @@ describe('ez-file-tree', function() {
     expect(el.attr('id')).toBe('fileTree');
   });
 
-  it('should show the first level folders', function() {
+  it('should show the first level folders/files', function() {
     expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).text()).toBe('Folder 1');
     expect(el.find('ul:first > li:nth-child(3) .file-name').eq(0).text()).toBe('Folder 2');
+    expect(el.find('ul:first > li:nth-child(4) .file-name').eq(0).text()).toBe('File on root');
   });
 
   it('should hide nested folders', function() {
@@ -104,6 +113,13 @@ describe('ez-file-tree', function() {
   it('should select file on click', function() {
     el.find('ul:first > li:nth-child(2) .file-name').eq(0).click();
     expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parents('.label-container').hasClass('selected')).toEqual(true);
+  });
+
+  it('should unselect previous file on another file click', function() {
+    el.find('ul:first > li:nth-child(2) .file-name').eq(0).click();
+
+    el.find('ul:first > li:nth-child(3) .file-name').eq(0).click();
+    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parents('.label-container').hasClass('selected')).toEqual(false);
   });
 
   it('should open/close tree on folder double click', function() {

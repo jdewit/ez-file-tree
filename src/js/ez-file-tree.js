@@ -19,9 +19,9 @@
       restrict: 'EA',
       link: function (scope, element, attrs) {
         var checking = attrs.checking === 'true' ? true : EzFileTreeConfig.checking,
-            multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
             nameField = attrs.nameField || EzFileTreeConfig.nameField,
             childrenField = attrs.childrenField || EzFileTreeConfig.childrenField,
+            multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
             template
         ;
 
@@ -39,18 +39,17 @@
                           '</span>'
         ;
 
-        template += '<span class="file-name" data-ng-click="select(child)">';
-
         if (checking) {
           template += '<input type="checkbox" ng-model="child._checked" ng-change="check(child)" data-ng-show="!isFolder(child)"/>';
         }
 
-        template +=   '<i class="' + EzFileTreeConfig.folderIconClass + '" data-ng-show="isFolder(child)"></i>' +
+        template += '<span class="file-name" data-ng-click="select(child)">' +
+                      '<i class="' + EzFileTreeConfig.folderIconClass + '" data-ng-show="isFolder(child)"></i>' +
                       '<i class="' + EzFileTreeConfig.fileIconClass + '" data-ng-show="!isFolder(child)"></i>' +
-                      '{{child.name}}' +
+                      '<span>{{child.' + nameField + '}}</span>' +
                     '</span>' +
                   '</div>' +
-                  '<div class="folder-container" ng-show="child._open" data-ez-file-tree="true"></div>' +
+                  '<div class="folder-container" ng-show="child._open" data-ez-file-tree="true" data-checking="' + checking  + '" data-multi-select="' + multiSelect + '"></div>' +
                 '</li>' +
               '</ul>'
         ;
@@ -65,7 +64,7 @@
 
         var deactivate = function(_scope) {
           var _active = false;
-          angular.forEach(_scope.child[childrenField], function(v, i) {
+          angular.forEach(_scope.child[childrenField], function(v) {
             if (v._checked === true) {
               _active = true;
             }
@@ -88,16 +87,17 @@
 
         var unselectAll = function(files) {
           angular.forEach(files, function(v) {
-            if (v.children && v.children.length) {
-              unselectAll(v.children);
+            if (v[childrenField] && v[childrenField].length) {
+              unselectAll(v[childrenField]);
             }
-            v.selected = false;
+            v._selected = false;
           });
         };
 
         scope.select = function(item) {
-          if (multiSelect === false && item._selected) {
-            unselectAll(scope.folder.children);
+          console.log(multiSelect);
+          if (multiSelect === false && !item._selected) {
+            unselectAll(scope.folder[childrenField]);
           }
 
           item._selected = !item._selected;

@@ -4,14 +4,18 @@
   margin: 0;
 
   i {
-    margin-right: 5px;
+    margin-right: 0;
+
+    &.icon-file {
+      padding-left: 2.5px;
+    }
   }
   
   input[type="checkbox"] {
     cursor: pointer;
     position: relative;
     vertical-align: middle;
-    margin: 0 5px 0 -15px;
+    margin: 0;
   }
 
   li {
@@ -19,7 +23,8 @@
   }
 
   .folder-toggle i {
-    margin-left: -10px; 
+    margin-left: -5px; 
+    padding-right: 2.5px;
     
     &:hover {
       color: #ccc;
@@ -30,7 +35,12 @@
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    padding: 0 5px;
+    padding: 0 2.5px;
+    margin-left: 2.5px;
+
+    i {
+      padding-right: 5px;
+    }
   }
 
   .label-container.selected {

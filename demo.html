@@ -19,9 +19,7 @@
   <script>
     angular.module('myApp', ['ez.fileTree'])
 
-      .controller('RootCtrl', ['$scope', 'EzFileTreeConfig', function($scope, EzFileTreeConfig) {
-
-        EzFileTreeConfig.checking = true;
+      .controller('RootCtrl', ['$scope', function($scope) {
 
         $scope.folder = {
           id: 'root',
@@ -97,6 +95,10 @@
                 }
               ]
             },
+            {
+              id: "Root file",
+              name: "Root file",
+            }
           ]
         };
 
@@ -117,20 +119,21 @@
   </script>
 </head>
 
-  <body ng-app="myApp">
-    <div ng-controller="RootCtrl">
+<body ng-app="myApp">
+  <div ng-controller="RootCtrl">
 
-      <table style="width: 100%;">
-        <tr>
-          <td style="width: 40%; vertical-align: top;">
-            <div ez-file-tree="folder"></div>
-          </td>
-          <td>
-            <pre style="font-size: 10px;">{{ folder | stringify }}</pre>
-          </td>
-        </tr>
-      </table>
-    </div>
-  </body>
+    <table style="width: 100%;">
+      <tr>
+        <td style="width: 40%; vertical-align: top;">
+          <div ez-file-tree="folder"></div>
+        </td>
+        <td>
+          <pre style="font-size: 10px;">{{ folder | stringify }}</pre>
+        </td>
+      </tr>
+    </table>
+
+  </div>
+</body>
 
 </html>

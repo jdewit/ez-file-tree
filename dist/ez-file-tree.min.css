@@ -4,19 +4,23 @@
   margin: 0;
 }
 .ez-file-tree i {
-  margin-right: 5px;
+  margin-right: 0;
+}
+.ez-file-tree i.icon-file {
+  padding-left: 2.5px;
 }
 .ez-file-tree input[type="checkbox"] {
   cursor: pointer;
   position: relative;
   vertical-align: middle;
-  margin: 0 5px 0 -15px;
+  margin: 0;
 }
 .ez-file-tree li {
   cursor: pointer;
 }
 .ez-file-tree .folder-toggle i {
-  margin-left: -10px;
+  margin-left: -5px;
+  padding-right: 2.5px;
 }
 .ez-file-tree .folder-toggle i:hover {
   color: #ccc;
@@ -25,7 +29,11 @@
   display: inline-block;
   vertical-align: middle;
   position: relative;
-  padding: 0 5px;
+  padding: 0 2.5px;
+  margin-left: 2.5px;
+}
+.ez-file-tree .file-name i {
+  padding-right: 5px;
 }
 .ez-file-tree .label-container.selected .file-name {
   background-color: #006dcc;
