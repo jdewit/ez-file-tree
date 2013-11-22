@@ -10,7 +10,8 @@
     fileIconClass: 'icon-file',
     nameField: 'name',
     childrenField: 'children',
-    checking: false
+    checking: false,
+    multiSelect: false
   })
 
   .directive('ezFileTree', ['$compile', 'EzFileTreeConfig', function($compile, EzFileTreeConfig) {
@@ -18,6 +19,7 @@
       restrict: 'EA',
       link: function (scope, element, attrs) {
         var checking = attrs.checking === 'true' ? true : EzFileTreeConfig.checking,
+            multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
             nameField = attrs.nameField || EzFileTreeConfig.nameField,
             childrenField = attrs.childrenField || EzFileTreeConfig.childrenField,
             template
@@ -40,7 +42,7 @@
         template += '<span class="file-name" data-ng-click="select(child)">';
 
         if (checking) {
-          template += '<input type="checkbox" ng-model="child._checked" ng-change="fileChecked(child)" data-ng-show="!isFolder(child)"/>';
+          template += '<input type="checkbox" ng-model="child._checked" ng-change="check(child)" data-ng-show="!isFolder(child)"/>';
         }
 
         template +=   '<i class="' + EzFileTreeConfig.folderIconClass + '" data-ng-show="isFolder(child)"></i>' +
@@ -76,7 +78,7 @@
           }
         };
 
-        scope.fileChecked = function(file) {
+        scope.check = function(file) {
           if (file._checked) {
             activate(scope);
           } else {
@@ -84,7 +86,20 @@
           }
         };
 
+        var unselectAll = function(files) {
+          angular.forEach(files, function(v) {
+            if (v.children && v.children.length) {
+              unselectAll(v.children);
+            }
+            v.selected = false;
+          });
+        };
+
         scope.select = function(item) {
+          if (multiSelect === false && item._selected) {
+            unselectAll(scope.folder.children);
+          }
+
           item._selected = !item._selected;
         };
 

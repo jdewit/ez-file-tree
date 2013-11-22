@@ -16,7 +16,7 @@
   cursor: pointer;
 }
 .ez-file-tree .folder-toggle i {
-  margin-left: -15px;
+  margin-left: -10px;
 }
 .ez-file-tree .folder-toggle i:hover {
   color: #ccc;
@@ -28,5 +28,6 @@
   padding: 0 5px;
 }
 .ez-file-tree .label-container.selected .file-name {
-  background-color: #24748c;
+  background-color: #006dcc;
+  color: #fff;
 }
