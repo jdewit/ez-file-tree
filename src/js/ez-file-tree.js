@@ -10,16 +10,16 @@
     fileIconClass: 'icon-file',
     nameField: 'name',
     childrenField: 'children',
-    checking: true
+    checking: false
   })
 
   .directive('ezFileTree', ['$compile', 'EzFileTreeConfig', function($compile, EzFileTreeConfig) {
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
-        var checking = EzFileTreeConfig.checking,
-            nameField = EzFileTreeConfig.nameField,
-            childrenField = EzFileTreeConfig.childrenField,
+        var checking = attrs.checking === 'true' ? true : EzFileTreeConfig.checking,
+            nameField = attrs.nameField || EzFileTreeConfig.nameField,
+            childrenField = attrs.childrenField || EzFileTreeConfig.childrenField,
             template
         ;
 
