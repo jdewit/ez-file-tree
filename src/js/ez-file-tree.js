@@ -4,84 +4,80 @@
   angular.module( 'ez.fileTree', [] )
 
   .constant('EzFileTreeConfig', {
-    chevronRightIconClass: 'icon-chevron-right',
-    chevronDownIconClass: 'icon-chevron-down',
-    folderIconClass: 'icon-folder-close',
-    fileIconClass: 'icon-file',
-    nameField: 'name',
+    enableChecking: false,
+    multiSelect: false,
+    onlyFileSelection: false,
     childrenField: 'children',
-    checking: false,
-    multiSelect: false
+    isFolder: function(data) {
+      return (data.type === 'folder' || data.type === 'album');
+    },
+    getChildren: function(data) {
+      return [];
+    }
   })
+
+  .controller('RecursionCtrl', ['$scope', 'EzFileTreeConfig', function($scope, EzFileTreeConfig) {
+    var childrenField = EzFileTreeConfig.childrenField;
+
+    // active parent folders
+    var activate = function(_scope) {
+      _scope.data._active = true;
+
+      if (typeof (_scope.$parent.$parent.data) !== 'undefined') {
+        activate(_scope.$parent.$parent);
+      }
+    };
+
+    // deactivate parent folders if no children are active
+    var deactivate = function(_scope, data) {
+      var active = false;
+
+      angular.forEach(_scope.data[childrenField], function(v) {
+        if (v._checked === true && data !== v) {
+          active = true;
+
+          return;
+        }
+      });
+
+      _scope.data._active = active;
+
+      if (active === false && typeof (_scope.$parent.$parent.data) !== 'undefined') {
+        deactivate(_scope.$parent.$parent, data);
+      }
+    };
+
+    $scope.check = function(data) {
+      if (!data._checked) {
+        activate($scope.$parent.$parent);
+      } else {
+        deactivate($scope.$parent.$parent, data);
+      }
+    };
+  }])
 
   .directive('ezFileTree', ['$compile', 'EzFileTreeConfig', function($compile, EzFileTreeConfig) {
     return {
       restrict: 'EA',
+      scope: {
+        tree: '=ezFileTree'
+      },
+      templateUrl: 'ez-file-tree-container.html',
       link: function (scope, element, attrs) {
-        var checking = attrs.checking === 'true' ? true : EzFileTreeConfig.checking,
-            nameField = attrs.nameField || EzFileTreeConfig.nameField,
+        var multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
+            onlyFileSelection = attrs.onlyFileSelection === 'true' ? true : EzFileTreeConfig.onlyFileSelection,
             childrenField = attrs.childrenField || EzFileTreeConfig.childrenField,
-            multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
-            template
+            getChildren = attrs.getChildren ? scope.$eval(attrs.getChildren) : EzFileTreeConfig.getChildren
         ;
 
-        if (!scope.child) {
-          scope.child = scope.$eval(attrs.ezFileTree);
-        }
+        scope.enableChecking = attrs.enableChecking === 'true' ? true : EzFileTreeConfig.enableChecking;
+        scope.isFolder = attrs.isFolder ? scope.$eval(attrs.isFolder) : EzFileTreeConfig.isFolder;
 
-        template = '<ul class="ez-file-tree">' +
-                      '<li data-ng-show="child.' + childrenField + ' && child.' + childrenField + '.length == 0">empty</li>' +
-                      '<li ng-repeat="child in child.' + childrenField + '" data-ng-dblclick="toggle($event, child)">' +
-                        '<div class="label-container" ng-class="{selected: child._selected}">' +
-                          '<span class="folder-toggle" data-ng-click="toggle($event, child)">' +
-                            '<i class="' + EzFileTreeConfig.chevronRightIconClass + '" title="Open folder" data-ng-show="!child._open && isFolder(child)"></i>' +
-                            '<i class="' + EzFileTreeConfig.chevronDownIconClass + '" title="Close folder" data-ng-show="child._open && isFolder(child)"></i>' +
-                          '</span>'
-        ;
+        scope.toggle = function(e, data) {
+          data._open = !data._open;
 
-        if (checking) {
-          template += '<input type="checkbox" ng-model="child._checked" ng-change="check(child)" data-ng-show="!isFolder(child)"/>';
-        }
-
-        template += '<span class="file-name" data-ng-click="select(child)">' +
-                      '<i class="' + EzFileTreeConfig.folderIconClass + '" data-ng-show="isFolder(child)"></i>' +
-                      '<i class="' + EzFileTreeConfig.fileIconClass + '" data-ng-show="!isFolder(child)"></i>' +
-                      '<span>{{child.' + nameField + '}}</span>' +
-                    '</span>' +
-                  '</div>' +
-                  '<div class="folder-container" ng-show="child._open" data-ez-file-tree="true" data-checking="' + checking  + '" data-multi-select="' + multiSelect + '"></div>' +
-                '</li>' +
-              '</ul>'
-        ;
-
-        var activate = function(_scope) {
-          _scope.child._active = true;
-
-          if (typeof (_scope.$parent.child) !== 'undefined') {
-            activate(_scope.$parent);
-          }
-        };
-
-        var deactivate = function(_scope) {
-          var _active = false;
-          angular.forEach(_scope.child[childrenField], function(v) {
-            if (v._checked === true) {
-              _active = true;
-            }
-          });
-
-          _scope.child._active = _active;
-
-          if (_active === false && _scope.$parent.child && _scope.$parent.child[childrenField]) {
-            deactivate(_scope.$parent);
-          }
-        };
-
-        scope.check = function(file) {
-          if (file._checked) {
-            activate(scope);
-          } else {
-            deactivate(scope);
+          if (!data.children || !data.children.length) {
+            getChildren(data);
           }
         };
 
@@ -95,24 +91,27 @@
         };
 
         scope.select = function(item) {
-          console.log('select');
           if (item._selected) {
 
             item._selected = false;
 
             if (multiSelect) {
-              scope.folder._selectedFiles.splice(scope.folder._selectedFiles.indexOf(item), 1);
+              scope.tree._selectedFiles.splice(scope.tree._selectedFiles.indexOf(item), 1);
             } else {
-              scope.folder._selectedFile = null;
+              scope.tree._selectedFile = null;
             }
 
           } else {
 
             if (multiSelect) {
-              scope.folder._selectedFiles.push(item);
+              if (!scope.tree._selectedFiles) {
+                  scope.tree._selectedFiles = [];
+              }
+
+              scope.tree._selectedFiles.push(item);
             } else {
-              scope.folder._selectedFile = item;
-              unselectAll(scope.folder[childrenField]);
+              scope.tree._selectedFile = item;
+              unselectAll(scope.tree[childrenField]);
             }
 
             item._selected = true;
@@ -120,26 +119,23 @@
           }
         };
 
-        scope.toggle = function(e, item) {
-          e.stopPropagation();
-          e.preventDefault();
+        //scope.toggle = function(e, item) {
+          //e.stopPropagation();
+          //e.preventDefault();
 
-          if (scope.isFolder(item)) {
-            item._open = !item._open;
+          //if (scope.isFolder(item)) {
+            //item._open = !item._open;
 
-            if (!item[childrenField]) {
-              item[childrenField] = scope.getChildren(item);
-            }
-          }
-        };
+            //if (!item[childrenField]) {
+              //item[childrenField] = scope.getChildren(item);
+            //}
+          //}
+        //};
 
-        scope.isFolder = function(item) {
-          return (item.type === 'folder' || item.type === 'album');
-        };
 
-        var newElement = angular.element(template);
-        $compile(newElement)(scope);
-        element.append(newElement);
+        //var newElement = angular.element(template);
+        //$compile(newElement)(scope);
+        //element.append(newElement);
       }
     };
   }]);

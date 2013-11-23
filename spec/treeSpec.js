@@ -2,6 +2,27 @@ describe('ez-file-tree', function() {
   var el, scope, rows;
 
   beforeEach(module('ez.fileTree'));
+  //beforeEach(module('ez-file-tree.html'));
+  //beforeEach(angular.mock.module('ngMockE2E'));
+  //beforeEach(module('ez-file-tree.html'));
+  //beforeEach(module('ez-file-tree-container.html'));
+
+  beforeEach(inject(function($templateCache,_$compile_,_$rootScope_) {
+		template = $templateCache.get('src/template/ez-file-tree.html');
+		$templateCache.put('ez-file-tree.html',template);
+
+		$compile = _$compile_;
+		$rootScope = _$rootScope_;
+	}));
+
+  beforeEach(inject(function($templateCache,_$compile_,_$rootScope_) {
+		template = $templateCache.get('src/template/ez-file-tree-container.html');
+		$templateCache.put('ez-file-tree-container.html',template);
+
+		$compile = _$compile_;
+		$rootScope = _$rootScope_;
+	}));
+
 
   beforeEach(inject(function($rootScope, $compile) {
       scope = $rootScope;
@@ -96,14 +117,14 @@ describe('ez-file-tree', function() {
   });
 
   it('should show the first level folders/files', function() {
-    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).text()).toBe('Folder 1');
-    expect(el.find('ul:first > li:nth-child(3) .file-name').eq(0).text()).toBe('Folder 2');
-    expect(el.find('ul:first > li:nth-child(4) .file-name').eq(0).text()).toBe('File on root');
+    expect(el.find('ul:first > li:nth-child(1) .file-name').eq(0).text()).toBe('Folder 1');
+    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).text()).toBe('Folder 2');
+    expect(el.find('ul:first > li:nth-child(3) .file-name').eq(0).text()).toBe('File on root');
   });
 
   it('should hide nested folders', function() {
-    expect(el.find('ul:first > li:nth-child(2) li .file-name').eq(0).text()).toBe('Folder 1a');
-    expect(el.find('ul:first > li:nth-child(2) li .file-name').eq(0).parents('.folder-container').hasClass('ng-hide')).toEqual(true);
+    expect(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).text()).toBe('Folder 1a');
+    expect(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).parents('ul').hasClass('ng-hide')).toEqual(true);
   });
 
   it('should select file on click', function() {

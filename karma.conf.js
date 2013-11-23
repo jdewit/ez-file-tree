@@ -12,6 +12,7 @@ module.exports = function(config) {
 
       // our app
       'src/js/ez-file-tree.js',
+      'dist/ez-file-tree.tpl.js',
 
       // tests
       'spec/*Spec.js',

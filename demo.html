@@ -13,9 +13,10 @@
   </style>
 
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="//code.angularjs.org/1.2.0-rc.2/angular.js"></script>
+  <script src="//code.angularjs.org/1.2.1/angular.js"></script>
 
   <script src="src/js/ez-file-tree.js"></script>
+  <script src="dist/ez-file-tree.tpl.js"></script>
   <script>
     angular.module('myApp', ['ez.fileTree'])
 
@@ -102,11 +103,7 @@
           ]
         };
 
-
-        // custom get children method
-        $scope.getChildren = function(file) {
-          file.children = [{name: 'File loaded from root ctrl'}, {name: 'other file loaded from root ctl'}];
-        };
+        $scope.folder2 = $.extend(true, {}, $scope.folder);
 
       }])
 
@@ -125,12 +122,21 @@
     <table style="width: 100%;">
       <tr>
         <td style="width: 40%; vertical-align: top;">
+          <h3>Folder 1</h3>
           <div ez-file-tree="folder"></div>
           <hr>
           Selected File: {{ folder._selectedFile | stringify }}
+
+          <br>
+          <hr>
+          <h3>Folder 2</h3>
+          <div ez-file-tree="folder2" multi-select="true" enable-checking="true"></div>
+          <hr>
+          Selected Files: {{ folder2._selectedFiles | stringify }}
         </td>
         <td>
-          <pre style="font-size: 10px;">{{ folder | stringify }}</pre>
+          Folder2 dump
+          <pre style="font-size: 10px;">{{ folder2 | stringify }}</pre>
         </td>
       </tr>
     </table>

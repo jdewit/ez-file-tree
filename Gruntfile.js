@@ -55,6 +55,16 @@ module.exports = function(grunt) {
         }
       }
     },
+    ngtemplates:  {
+      ezFileTree:      {
+        src:      'src/template/*.html',
+        dest:     'dist/ez-file-tree.tpl.js',
+        options: {
+          module: 'ez.fileTree',
+          url: function(url) { return url.replace('src/template/', ''); }
+        }
+      }
+    },
     uglify: {
       options: {
         mangle: true,
@@ -82,6 +92,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-angular-templates');
 
-  grunt.registerTask('default', ['jshint', 'uglify', 'less']);
+  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less']);
 };
