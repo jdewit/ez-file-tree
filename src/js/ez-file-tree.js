@@ -10,9 +10,6 @@
     childrenField: 'children',
     isFolder: function(data) {
       return (data.type === 'folder' || data.type === 'album');
-    },
-    getChildren: function(data) {
-      return [];
     }
   })
 
@@ -60,14 +57,14 @@
     return {
       restrict: 'EA',
       scope: {
-        tree: '=ezFileTree'
+        tree: '=ezFileTree',
+        getChildren: '='
       },
       templateUrl: 'ez-file-tree-container.html',
       link: function (scope, element, attrs) {
         var multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
             onlyFileSelection = attrs.onlyFileSelection === 'true' ? true : EzFileTreeConfig.onlyFileSelection,
-            childrenField = attrs.childrenField || EzFileTreeConfig.childrenField,
-            getChildren = attrs.getChildren ? scope.$eval(attrs.getChildren) : EzFileTreeConfig.getChildren
+            childrenField = attrs.childrenField || EzFileTreeConfig.childrenField
         ;
 
         scope.enableChecking = attrs.enableChecking === 'true' ? true : EzFileTreeConfig.enableChecking;
@@ -77,7 +74,7 @@
           data._open = !data._open;
 
           if (!data.children || (data.children && !data.children.length)) {
-            getChildren(data);
+            scope.getChildren(data);
           }
         };
 
@@ -118,24 +115,6 @@
 
           }
         };
-
-        //scope.toggle = function(e, item) {
-          //e.stopPropagation();
-          //e.preventDefault();
-
-          //if (scope.isFolder(item)) {
-            //item._open = !item._open;
-
-            //if (!item[childrenField]) {
-              //item[childrenField] = scope.getChildren(item);
-            //}
-          //}
-        //};
-
-
-        //var newElement = angular.element(template);
-        //$compile(newElement)(scope);
-        //element.append(newElement);
       }
     };
   }]);
