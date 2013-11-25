@@ -2,7 +2,7 @@
   "name": "ez-file-tree",
   "description": "Angular file tree directive",
   "keywords": [],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "author": "Joris de Wit",
   "repository": {
@@ -30,6 +30,7 @@
     "karma-requirejs": "~0.1.0",
     "karma-phantomjs-launcher": "~0.1.0",
     "karma": "~0.10.4",
-    "grunt-bump": "0.0.11"
+    "grunt-bump": "0.0.11",
+    "grunt-angular-templates": "~0.4.7"
   }
 }
