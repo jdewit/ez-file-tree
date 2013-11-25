@@ -76,7 +76,7 @@
         scope.toggle = function(e, data) {
           data._open = !data._open;
 
-          if (!data.children || !data.children.length) {
+          if (!data.children || (data.children && !data.children.length)) {
             getChildren(data);
           }
         };
