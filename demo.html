@@ -15,12 +15,34 @@
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="//code.angularjs.org/1.2.1/angular.js"></script>
 
-  <script src="src/js/ez-file-tree.js"></script>
+  <script src="dist/ez-file-tree.min.js"></script>
   <script src="dist/ez-file-tree.tpl.js"></script>
+
+
   <script>
     angular.module('myApp', ['ez.fileTree'])
 
       .controller('RootCtrl', ['$scope', function($scope) {
+
+        $scope.getChildren = function(data) {
+          data.children = [
+            {
+              id: Math.floor(Math.random()*1111),
+              name: 'Folder ' + Math.floor(Math.random()*1111),
+              type: 'folder'
+            },
+            {
+              id: Math.floor(Math.random()*1111),
+              name: 'File ' + Math.floor(Math.random()*1111),
+              type: 'file'
+            },
+            {
+              id: Math.floor(Math.random()*1111),
+              name: 'File ' + Math.floor(Math.random()*1111),
+              type: 'file'
+            }
+          ];
+        };
 
         $scope.folder = {
           id: 'root',
@@ -103,7 +125,18 @@
           ]
         };
 
-        $scope.folder2 = $.extend(true, {}, $scope.folder);
+        $scope.folder2 = {
+          id: 'root',
+          name: 'Root',
+          children: [
+            {
+              id: 1,
+              name: 'random',
+              type: 'folder'
+            }
+          ]
+        };
+         
 
       }])
 
@@ -114,10 +147,21 @@
       })
     ;
   </script>
+
 </head>
 
 <body ng-app="myApp">
   <div ng-controller="RootCtrl">
+    <script type="text/ng-template" id="toc.html">
+      <div> 
+        <span>{{ data.name }}</span>
+        <ul>
+          <li ng-show="data._active" ng-repeat="data in data.children">
+            <div ng-include="'toc.html'"></div>
+          </li>
+        </ul>
+      </div>
+    </script>
 
     <table style="width: 100%;">
       <tr>
@@ -130,9 +174,17 @@
           <br>
           <hr>
           <h3>Folder 2</h3>
-          <div ez-file-tree="folder2" multi-select="true" enable-checking="true"></div>
+          <div ez-file-tree="folder2" multi-select="true" enable-checking="true" data-get-children="getChildren"></div>
           <hr>
           Selected Files: {{ folder2._selectedFiles | stringify }}
+
+          <hr>
+          <h3>Folder2 Table of Contents</h3>
+          <ul>
+            <li ng-show="data._active" ng-repeat="data in folder2.children">
+              <div ng-include="'toc.html'"></div>
+            </li>
+          </ul>
         </td>
         <td>
           Folder2 dump
