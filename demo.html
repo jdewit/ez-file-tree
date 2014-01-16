@@ -8,24 +8,24 @@
 
   <style>
     a i {
-     padding-right: 5px; 
+     padding-right: 5px;
     }
   </style>
 
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="//code.angularjs.org/1.2.1/angular.js"></script>
 
-  <script src="dist/ez-file-tree.min.js"></script>
+  <script src="src/js/ez-file-tree.js"></script>
   <script src="dist/ez-file-tree.tpl.js"></script>
 
 
   <script>
     angular.module('myApp', ['ez.fileTree'])
 
-      .controller('RootCtrl', ['$scope', function($scope) {
+      .controller('DemoCtrl', ['$scope', function($scope) {
 
-        $scope.getChildren = function(data) {
-          data.children = [
+        $scope.getChildren = function() {
+          return [
             {
               id: Math.floor(Math.random()*1111),
               name: 'Folder ' + Math.floor(Math.random()*1111),
@@ -136,7 +136,23 @@
             }
           ]
         };
-         
+
+        $scope.folder3 = {
+          id: 'root',
+          name: 'Root',
+          children: {
+            '1': {
+              id: 1,
+              name: 'random',
+              type: 'folder'
+            },
+            '2': {
+              id: 2,
+              name: 'other',
+              type: 'file'
+            }
+          }
+        };
 
       }])
 
@@ -151,9 +167,9 @@
 </head>
 
 <body ng-app="myApp">
-  <div ng-controller="RootCtrl">
+  <div ng-controller="DemoCtrl">
     <script type="text/ng-template" id="toc.html">
-      <div> 
+      <div>
         <span>{{ data.name }}</span>
         <ul>
           <li ng-show="data._active" ng-repeat="data in data.children">
@@ -185,6 +201,13 @@
               <div ng-include="'toc.html'"></div>
             </li>
           </ul>
+
+          <hr>
+
+          <h3>Folder 3</h3>
+          <div ez-file-tree="folder3" data-get-children="getChildren"></div>
+          <hr>
+          Selected File: {{ folder3._selectedFile | stringify }}
         </td>
         <td>
           Folder2 dump

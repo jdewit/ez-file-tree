@@ -4,6 +4,8 @@ module.exports = function(config) {
 
     frameworks: ['jasmine'],
 
+    reporters: ['progress', 'coverage'],
+
     files: [
       // libraries
       'bower_components/jquery/jquery.js',
@@ -18,7 +20,17 @@ module.exports = function(config) {
       'spec/*Spec.js',
     ],
 
-    autoWatch: true,
+    preprocessors: {
+      'src/js/*.js': ['coverage']
+    },
+
+    coverageReporter: {
+      type : 'html',
+      dir : 'spec/coverage/'
+    },
+
+    port: 1429,
+
     browsers: ['Chrome']
   });
 };

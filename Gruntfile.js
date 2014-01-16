@@ -45,6 +45,17 @@ module.exports = function(grunt) {
         },
       }
     },
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js',
+        background: true
+      },
+      singleRun: {
+        configFile: 'karma.conf.js',
+        background: false,
+        singleRun: true
+      }
+    },
     less: {
       dist: {
         options: {
@@ -65,6 +76,11 @@ module.exports = function(grunt) {
         }
       }
     },
+    shell: {
+      clearCoverage: {
+        command: 'rm -rf spec/coverage/*'
+      }
+    },
     uglify: {
       options: {
         mangle: false,
@@ -78,7 +94,7 @@ module.exports = function(grunt) {
     },
     watch: {
       dev: {
-        files: ['src/**/*'],
+        files: ['src/**/*', 'spec/*Spec.js'],
         tasks: ['default'],
         options: {
           livereload: 9090,
@@ -92,7 +108,13 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-angular-templates');
 
-  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less']);
+  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less', 'karma:unit:run']);
+
+  grunt.registerTask('dev', ['karma:unit:start', 'shell:clearCoverage', 'watch']);
+
+  grunt.registerTask('test', ['shell:clearCoverage', 'karma:singleRun']);
 };

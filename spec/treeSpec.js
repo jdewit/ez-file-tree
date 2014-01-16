@@ -2,10 +2,6 @@ describe('ez-file-tree', function() {
   var el, scope, rows;
 
   beforeEach(module('ez.fileTree'));
-  //beforeEach(module('ez-file-tree.html'));
-  //beforeEach(angular.mock.module('ngMockE2E'));
-  //beforeEach(module('ez-file-tree.html'));
-  //beforeEach(module('ez-file-tree-container.html'));
 
   beforeEach(inject(function($templateCache,_$compile_,_$rootScope_) {
 		template = $templateCache.get('src/template/ez-file-tree.html');

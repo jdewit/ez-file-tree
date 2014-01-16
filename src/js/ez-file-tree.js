@@ -74,7 +74,11 @@
           data._open = !data._open;
 
           if (!data.children || (data.children && !data.children.length)) {
-            scope.getChildren(data);
+            if (!scope.getChildren) {
+              throw new Error('You must add a getChildren attribute');
+            }
+
+            data.children = scope.getChildren();
           }
         };
 
