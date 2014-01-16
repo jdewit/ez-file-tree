@@ -1,6 +1,6 @@
 {
   "name": "ez-file-tree",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": ["dist/ez-file-tree.min.js", "dist/ez-file-tree.min.css"],
   "ignore": [
     "**/.*",
