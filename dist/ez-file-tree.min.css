@@ -16,6 +16,7 @@
   margin: 0;
 }
 .ez-file-tree li {
+  text-align: left;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
