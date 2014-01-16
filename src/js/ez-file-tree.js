@@ -78,7 +78,7 @@
               throw new Error('You must add a getChildren attribute');
             }
 
-            data.children = scope.getChildren();
+            scope.getChildren(data);
           }
         };
 

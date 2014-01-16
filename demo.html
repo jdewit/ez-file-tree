@@ -24,8 +24,8 @@
 
       .controller('DemoCtrl', ['$scope', function($scope) {
 
-        $scope.getChildren = function() {
-          return [
+        $scope.getChildren = function(data) {
+          data.children = [
             {
               id: Math.floor(Math.random()*1111),
               name: 'Folder ' + Math.floor(Math.random()*1111),

@@ -8,6 +8,7 @@ module.exports = function(grunt) {
         files: ['package.json', 'bower.json'],
         updateConfigs: [],
         commit: true,
+        push: false,
         commitMessage: 'Release v%VERSION%',
         commitFiles: ['package.json', 'bower.json']
       }
@@ -112,7 +113,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-angular-templates');
 
-  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less', 'karma:unit:run']);
+  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less', 'karma:unit:singleRun']);
 
   grunt.registerTask('dev', ['karma:unit:start', 'shell:clearCoverage', 'watch']);
 
