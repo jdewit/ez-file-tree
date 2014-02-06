@@ -14,8 +14,8 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "<div class=\"label-container\" ng-class=\"{selected: data._selected}\" ng-controller=\"RecursionCtrl\">\n" +
     "\n" +
     "  <span class=\"folder-toggle\" data-ng-click=\"toggle($event, data)\">\n" +
-    "    <i class=\"icon-chevron-right\" title=\"Open folder\" data-ng-show=\"!data._open && isFolder(data)\"></i>\n" +
-    "    <i class=\"icon-chevron-down\" title=\"Close folder\" data-ng-show=\"data._open && isFolder(data)\"></i>\n" +
+    "    <i ng-class=\"icons.chevronRight\" title=\"Open folder\" data-ng-show=\"!data._open && isFolder(data)\"></i>\n" +
+    "    <i ng-class=\"icons.chevronDown\" title=\"Close folder\" data-ng-show=\"data._open && isFolder(data)\"></i>\n" +
     "  </span>\n" +
     "\n" +
     "  <input type=\"checkbox\" ng-model=\"data._checked\" ng-click=\"check(data)\" data-ng-show=\"enableChecking && !isFolder(data)\"/>\n" +
@@ -23,8 +23,8 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "  <span ng-click=\"select(data)\" ng-dblclick=\"toggle($event, data)\">\n" +
     "\n" +
     "    <span>\n" +
-    "      <i class=\"icon-folder-close\" data-ng-show=\"isFolder(data)\"></i>\n" +
-    "      <i class=\"icon-file\" data-ng-show=\"!isFolder(data)\"></i>\n" +
+    "      <i ng-class=\"icons.folderClose\" data-ng-show=\"isFolder(data)\"></i>\n" +
+    "      <i ng-class=\"icons.file\" data-ng-show=\"!isFolder(data)\"></i>\n" +
     "    </span>\n" +
     "\n" +
     "    <span class=\"file-name\">{{data.name}}</span>\n" +

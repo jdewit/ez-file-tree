@@ -7,6 +7,12 @@
     enableChecking: false,
     multiSelect: false,
     onlyFileSelection: false,
+    icons: {
+      chevronRight: 'fa fa-chevron-right',
+      chevronDown: 'fa fa-chevron-down',
+      folder: 'fa fa-folder',
+      file: 'fa fa-file'
+    },
     childrenField: 'children',
     isFolder: function(data) {
       return (data.type === 'folder' || data.type === 'album');
@@ -43,6 +49,8 @@
         deactivate(_scope.$parent.$parent, data);
       }
     };
+
+    $scope.icons = EzFileTreeConfig.icons;
 
     $scope.check = function(data) {
       if (!data._checked) {

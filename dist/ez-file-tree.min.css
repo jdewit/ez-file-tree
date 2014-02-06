@@ -22,10 +22,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
 }
-.ez-file-tree .folder-toggle i {
-  margin-left: -5px;
-  padding-right: 2.5px;
-}
 .ez-file-tree .folder-toggle i:hover {
   color: #ccc;
 }

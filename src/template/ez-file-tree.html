@@ -1,8 +1,8 @@
 <div class="label-container" ng-class="{selected: data._selected}" ng-controller="RecursionCtrl">
 
   <span class="folder-toggle" data-ng-click="toggle($event, data)">
-    <i class="icon-chevron-right" title="Open folder" data-ng-show="!data._open && isFolder(data)"></i>
-    <i class="icon-chevron-down" title="Close folder" data-ng-show="data._open && isFolder(data)"></i>
+    <i ng-class="icons.chevronRight" title="Open folder" data-ng-show="!data._open && isFolder(data)"></i>
+    <i ng-class="icons.chevronDown" title="Close folder" data-ng-show="data._open && isFolder(data)"></i>
   </span>
 
   <input type="checkbox" ng-model="data._checked" ng-click="check(data)" data-ng-show="enableChecking && !isFolder(data)"/>
@@ -10,8 +10,8 @@
   <span ng-click="select(data)" ng-dblclick="toggle($event, data)">
 
     <span>
-      <i class="icon-folder-close" data-ng-show="isFolder(data)"></i>
-      <i class="icon-file" data-ng-show="!isFolder(data)"></i>
+      <i ng-class="icons.folderClose" data-ng-show="isFolder(data)"></i>
+      <i ng-class="icons.file" data-ng-show="!isFolder(data)"></i>
     </span>
 
     <span class="file-name">{{data.name}}</span>
