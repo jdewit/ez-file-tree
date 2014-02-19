@@ -3,7 +3,7 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
   $templateCache.put('ez-file-tree-container.html',
     "<div class=\"ez-file-tree\">\n" +
     "  <ul>\n" +
-    "    <li ng-repeat=\"data in tree.children\" ng-include=\"'ez-file-tree.html'\" ng-controller=\"RecursionCtrl\"></li>\n" +
+    "    <li ng-repeat=\"data in tree[childrenField]\" ng-include=\"'ez-file-tree.html'\" ng-controller=\"RecursionCtrl\"></li>\n" +
     "  </ul>\n" +
     "</div>\n" +
     "\n"
@@ -34,7 +34,7 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "\n" +
     "<ul ng-show=\"data._open\">\n" +
-    "    <li ng-repeat=\"data in data.children\" ng-include=\"'ez-file-tree.html'\"></li>\n" +
+    "    <li ng-repeat=\"data in data[childrenField]\" ng-include=\"'ez-file-tree.html'\"></li>\n" +
     "</ul>\n"
   );
 

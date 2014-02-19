@@ -42,7 +42,7 @@ module.exports = function(grunt) {
           }
         },
         files: {
-          src: ['src/**/*.js', 'spec/**/*.js']
+          src: ['src/js/ez-file-tree.js', 'spec/treeSpec.js']
         },
       }
     },
@@ -95,10 +95,10 @@ module.exports = function(grunt) {
     },
     watch: {
       dev: {
-        files: ['src/**/*', 'spec/*Spec.js'],
-        tasks: ['default'],
+        files: ['Gruntfile', 'src/**/*', 'spec/*Spec.js'],
+        tasks: ['jshint', 'ngtemplates', 'uglify', 'less', 'karma:unit:run'],
         options: {
-          livereload: 9090,
+          livereload: 9290,
         }
       }
     }

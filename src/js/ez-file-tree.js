@@ -20,7 +20,7 @@
   })
 
   .controller('RecursionCtrl', ['$scope', 'EzFileTreeConfig', function($scope, EzFileTreeConfig) {
-    var childrenField = EzFileTreeConfig.childrenField;
+    $scope.childrenField = EzFileTreeConfig.childrenField;
 
     // active parent folders
     var activate = function(_scope) {
@@ -35,7 +35,7 @@
     var deactivate = function(_scope, data) {
       var active = false;
 
-      angular.forEach(_scope.data[childrenField], function(v) {
+      angular.forEach(_scope.data[$scope.childrenField], function(v) {
         if (v._checked === true && data !== v) {
           active = true;
 
@@ -71,10 +71,10 @@
       templateUrl: 'ez-file-tree-container.html',
       link: function (scope, element, attrs) {
         var multiSelect = attrs.multiSelect === 'true' ? true : EzFileTreeConfig.multiSelect,
-            onlyFileSelection = attrs.onlyFileSelection === 'true' ? true : EzFileTreeConfig.onlyFileSelection,
-            childrenField = attrs.childrenField || EzFileTreeConfig.childrenField
+            onlyFileSelection = attrs.onlyFileSelection === 'true' ? true : EzFileTreeConfig.onlyFileSelection
         ;
 
+        scope.childrenField = attrs.childrenField || EzFileTreeConfig.childrenField;
         scope.enableChecking = attrs.enableChecking === 'true' ? true : EzFileTreeConfig.enableChecking;
         scope.isFolder = attrs.isFolder ? scope.$eval(attrs.isFolder) : EzFileTreeConfig.isFolder;
 
@@ -92,8 +92,8 @@
 
         var unselectAll = function(files) {
           angular.forEach(files, function(v) {
-            if (v[childrenField] && v[childrenField].length) {
-              unselectAll(v[childrenField]);
+            if (v[scope.childrenField] && v[scope.childrenField].length) {
+              unselectAll(v[scope.childrenField]);
             }
             v._selected = false;
           });
@@ -120,7 +120,7 @@
               scope.tree._selectedFiles.push(item);
             } else {
               scope.tree._selectedFile = item;
-              unselectAll(scope.tree[childrenField]);
+              unselectAll(scope.tree[scope.childrenField]);
             }
 
             item._selected = true;
