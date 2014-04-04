@@ -5,12 +5,12 @@
     <i ng-class="icons.chevronDown" title="Close folder" data-ng-show="data._open && isFolder(data)"></i>
   </span>
 
-  <input type="checkbox" ng-model="data._checked" ng-click="check(data)" data-ng-show="enableChecking && !isFolder(data)"/>
+  <input type="checkbox" ng-model="data._selected" ng-click="select(data, true)" data-ng-show="enableChecking"/>
 
   <span ng-click="select(data)" ng-dblclick="toggle($event, data)">
 
     <span>
-      <i ng-class="icons.folderClose" data-ng-show="isFolder(data)"></i>
+      <i ng-class="icons.folder" data-ng-show="isFolder(data)"></i>
       <i ng-class="icons.file" data-ng-show="!isFolder(data)"></i>
     </span>
 
@@ -21,5 +21,5 @@
 </div>
 
 <ul ng-show="data._open">
-    <li ng-repeat="data in data[childrenField]" ng-include="'ez-file-tree.html'"></li>
+    <li ng-repeat="data in data[childrenField] | object2array | orderBy:'name'" ng-include="'ez-file-tree.html'"></li>
 </ul>

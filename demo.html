@@ -17,12 +17,21 @@
 
   <script src="src/js/ez-file-tree.js"></script>
   <script src="dist/ez-file-tree.tpl.js"></script>
+  <script src="https://rawgithub.com/jdewit/ez-object2array/master/dist/ez-object2array.min.js"></script>
 
 
   <script>
     angular.module('myApp', ['ez.fileTree'])
 
       .controller('DemoCtrl', ['$scope', function($scope) {
+
+        $scope.$on('ez-file-tree.check', function(e, data) {
+          alert('file checked' + data.id);
+        });
+
+        $scope.$on('ez-file-tree.uncheck', function(e, data) {
+          alert('file unchecked' + data.id);
+        });
 
         $scope.getChildren = function(data) {
           data.children = [
@@ -193,6 +202,9 @@
           <div ez-file-tree="folder2" multi-select="true" enable-checking="true" data-get-children="getChildren"></div>
           <hr>
           Selected Files: {{ folder2._selectedFiles | stringify }}
+          <br>
+          <br>
+          Active Files: {{ folder2._activeFiles | stringify }}
 
           <hr>
           <h3>Folder2 Table of Contents</h3>

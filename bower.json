@@ -1,7 +1,10 @@
 {
   "name": "ez-file-tree",
   "version": "0.1.7",
-  "main": ["dist/ez-file-tree.min.js", "dist/ez-file-tree.min.css"],
+  "main": [
+    "dist/ez-file-tree.min.js",
+    "dist/ez-file-tree.min.css"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
@@ -11,5 +14,8 @@
     "jquery": "~2.0.3",
     "angular": "1.2.9",
     "angular-mocks": "*"
+  },
+  "dependencies": {
+    "ez-object2array": "~0.0.1"
   }
 }

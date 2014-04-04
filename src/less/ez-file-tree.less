@@ -1,12 +1,14 @@
 .ez-file-tree {
   ul {
     list-style: none;
-    padding: 0 0 0 15px;
+    padding: 0 0 0 18px;
     margin: 0;
   }
 
   i {
     margin-right: 0;
+    width: 14px;
+    text-align: center;
 
     &.icon-file {
       padding-left: 2.5px;
@@ -18,6 +20,7 @@
     position: relative;
     vertical-align: middle;
     margin: 0;
+    height: 14px;
   }
 
   li {
@@ -38,15 +41,13 @@
     display: inline-block;
     vertical-align: middle;
     position: relative;
-    padding: 0 2.5px;
-    margin-left: 2.5px;
 
     i {
       padding-right: 5px;
     }
   }
 
-  .label-container.selected {
+  &:not(.checking-enabled) .label-container.selected {
     .file-name {
       background-color: #006dcc;
       color: #fff;

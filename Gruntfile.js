@@ -113,7 +113,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-angular-templates');
 
-  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less', 'karma:unit:singleRun']);
+  grunt.registerTask('default', ['jshint', 'ngtemplates', 'uglify', 'less']);
 
   grunt.registerTask('dev', ['karma:unit:start', 'shell:clearCoverage', 'watch']);
 

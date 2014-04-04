@@ -1,6 +1,6 @@
-<div class="ez-file-tree">
+<div class="ez-file-tree" ng-class="{'checking-enabled': enableChecking}">
   <ul>
-    <li ng-repeat="data in tree[childrenField]" ng-include="'ez-file-tree.html'" ng-controller="RecursionCtrl"></li>
+    <li ng-repeat="data in tree[childrenField] | object2array | orderBy:'name'" ng-include="'ez-file-tree.html'" ng-controller="RecursionCtrl"></li>
   </ul>
 </div>
 

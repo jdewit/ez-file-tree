@@ -1,9 +1,10 @@
 angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
+  'use strict';
 
   $templateCache.put('ez-file-tree-container.html',
-    "<div class=\"ez-file-tree\">\n" +
+    "<div class=\"ez-file-tree\" ng-class=\"{'checking-enabled': enableChecking}\">\n" +
     "  <ul>\n" +
-    "    <li ng-repeat=\"data in tree[childrenField]\" ng-include=\"'ez-file-tree.html'\" ng-controller=\"RecursionCtrl\"></li>\n" +
+    "    <li ng-repeat=\"data in tree[childrenField] | object2array | orderBy:'name'\" ng-include=\"'ez-file-tree.html'\" ng-controller=\"RecursionCtrl\"></li>\n" +
     "  </ul>\n" +
     "</div>\n" +
     "\n"
@@ -18,12 +19,12 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "    <i ng-class=\"icons.chevronDown\" title=\"Close folder\" data-ng-show=\"data._open && isFolder(data)\"></i>\n" +
     "  </span>\n" +
     "\n" +
-    "  <input type=\"checkbox\" ng-model=\"data._checked\" ng-click=\"check(data)\" data-ng-show=\"enableChecking && !isFolder(data)\"/>\n" +
+    "  <input type=\"checkbox\" ng-model=\"data._selected\" ng-click=\"select(data, true)\" data-ng-show=\"enableChecking\"/>\n" +
     "\n" +
     "  <span ng-click=\"select(data)\" ng-dblclick=\"toggle($event, data)\">\n" +
     "\n" +
     "    <span>\n" +
-    "      <i ng-class=\"icons.folderClose\" data-ng-show=\"isFolder(data)\"></i>\n" +
+    "      <i ng-class=\"icons.folder\" data-ng-show=\"isFolder(data)\"></i>\n" +
     "      <i ng-class=\"icons.file\" data-ng-show=\"!isFolder(data)\"></i>\n" +
     "    </span>\n" +
     "\n" +
@@ -34,7 +35,7 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "\n" +
     "<ul ng-show=\"data._open\">\n" +
-    "    <li ng-repeat=\"data in data[childrenField]\" ng-include=\"'ez-file-tree.html'\"></li>\n" +
+    "    <li ng-repeat=\"data in data[childrenField] | object2array | orderBy:'name'\" ng-include=\"'ez-file-tree.html'\"></li>\n" +
     "</ul>\n"
   );
 
