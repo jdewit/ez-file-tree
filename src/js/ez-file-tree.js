@@ -97,7 +97,6 @@
           }
         };
 
-
         var unselectAll = function(files) {
           angular.forEach(files, function(v) {
             if (v[scope.childrenField] && v[scope.childrenField].length) {
@@ -116,10 +115,13 @@
           }
 
           item._selected = true;
+          scope.$emit('ez-file-tree.select', item);
         };
 
         var unselect = function(item) {
           item._selected = false;
+
+          scope.$emit('ez-file-tree.unselect', item);
 
           if (multiSelect) {
             delete scope.tree._selectedFiles[item.id];
