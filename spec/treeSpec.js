@@ -1,149 +1,173 @@
 describe('ez-file-tree', function() {
-  var el, scope, rows;
+  var el, $scope, rows, $timeout;
 
   beforeEach(module('ez.fileTree'));
 
-  beforeEach(inject(function($templateCache,_$compile_,_$rootScope_) {
-		template = $templateCache.get('src/template/ez-file-tree.html');
-		$templateCache.put('ez-file-tree.html',template);
 
+  beforeEach(inject(function(_$compile_, $rootScope, _$timeout_) {
 		$compile = _$compile_;
-		$rootScope = _$rootScope_;
-	}));
+    $timeout = _$timeout_;
+    $scope = $rootScope.$new();
 
-  beforeEach(inject(function($templateCache,_$compile_,_$rootScope_) {
-		template = $templateCache.get('src/template/ez-file-tree-container.html');
-		$templateCache.put('ez-file-tree-container.html',template);
+    el = angular.element(
+      '<div id="fileTree" ez-file-tree="folder"></div>'
+    );
 
-		$compile = _$compile_;
-		$rootScope = _$rootScope_;
-	}));
-
-
-  beforeEach(inject(function($rootScope, $compile) {
-      scope = $rootScope;
-
-      el = angular.element(
-        '<div id="fileTree" data-ez-file-tree="folder"></div>'
-      );
-
-      scope.folder = {
-        id: "Root",
-        name: "Root",
+    $scope.folder = {
+      id: "Root",
+      name: "Root",
+      type: "folder",
+        children: [
+        {
+          id: "Folder 1",
+          name: "Folder 1",
+          type: "folder",
           children: [
-          {
-            id: "Folder 1",
-            name: "Folder 1",
-            children: [
-              {
-                id: "1a",
-                name: "Folder 1a",
-                children: [
-                  {
-                    id: "1a1",
-                    name: "File 1a1"
-                  },
-                  {
-                    id: "1a2",
-                    name: "File 1a2"
-                  },
-                  {
-                    id: "1a2",
-                    name: "File 1a2"
-                  }
-                ]
-              },
-              {
-                id: "1b",
-                name: "File 1b"
-              },
-              {
-                id: "1c",
-                name: "File 1c"
-              }
-            ]
-          },
-          {
-            id: "2",
-            name: "Folder 2",
-            children: [
-              {
-                id: "2a",
-                name: "Folder 2a",
-                children: [
-                  {
-                    id: "2a1",
-                    name: "File 2a1"
-                  },
-                  {
-                    id: "2a2",
-                    name: "2a2"
-                  },
-                  {
-                    id: "2a2",
-                    name: "2a2"
-                  }
-                ]
-              },
-              {
-                id: "2b",
-                name: "File 2b"
-              },
-              {
-                id: "2c",
-                name: "File 2c"
-              }
-            ]
-          },
-          {
-            id: "bla",
-            name: "File on root",
-          }
-        ]
-      };
+            {
+              id: "1a",
+              name: "Folder 1a",
+              type: "folder",
+              children: [
+                {
+                  id: "1a1",
+                  type: "file",
+                  name: "File 1a1"
+                },
+                {
+                  id: "1a2",
+                  type: "file",
+                  name: "File 1a2"
+                },
+                {
+                  id: "1a2",
+                  type: "file",
+                  name: "File 1a2"
+                }
+              ]
+            },
+            {
+              id: "1b",
+              type: "file",
+              name: "File 1b"
+            },
+            {
+              id: "1c",
+              type: "file",
+              name: "File 1c"
+            }
+          ]
+        },
+        {
+          id: "2",
+          name: "Folder 2",
+          type: "folder",
+          children: [
+            {
+              id: "2a",
+              name: "Folder 2a",
+              type: "folder",
+              children: [
+                {
+                  id: "2a1",
+                  type: "file",
+                  name: "File 2a1"
+                },
+                {
+                  id: "2a2",
+                  type: "file",
+                  name: "2a2"
+                },
+                {
+                  id: "2a2",
+                  type: "file",
+                  name: "2a2"
+                }
+              ]
+            },
+            {
+              id: "2b",
+              type: "file",
+              name: "File 2b"
+            },
+            {
+              id: "2c",
+              type: "file",
+              name: "File 2c"
+            }
+          ]
+        },
+        {
+          id: "bla",
+          type: "file",
+          name: "File on root",
+        }
+      ]
+    };
 
-      $compile(el)(scope);
-      scope.$digest();
+    $compile(el)($scope);
+    $scope.$digest();
 
   }));
 
+  it('should have default config', function() {
+    assert.deepEqual(el.isolateScope().config, {
+      enableChecking: false,
+      enableFolderSelection: true,
+      multiSelect: false,
+      recursiveSelect: true,
+      icons: {
+        chevronRight: 'fa fa-chevron-right',
+        chevronDown: 'fa fa-chevron-down',
+        folder: 'fa fa-folder',
+        file: 'fa fa-file'
+      },
+      childrenField: 'children',
+      idField: 'id',
+      typeField: 'type',
+      folderType: 'folder'
+    });
+  });
+
   it('is a table element', function() {
-    expect(el.prop('tagName')).toBe('DIV');
-    expect(el.attr('id')).toBe('fileTree');
+    assert.equal(el.prop('tagName'), 'DIV');
+    assert.equal(el.attr('id'), 'fileTree');
   });
 
   it('should show the first level folders/files', function() {
-    expect(el.find('ul:first > li:nth-child(1) .file-name').eq(0).text()).toBe('Folder 1');
-    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).text()).toBe('Folder 2');
-    expect(el.find('ul:first > li:nth-child(3) .file-name').eq(0).text()).toBe('File on root');
+    assert.lengthOf(el.find('ul:first > li'), 3);
+    assert.equal(el.find('ul:first > li:nth-child(1) .file-name').eq(0).text(), 'Folder 1');
+    assert.equal(el.find('ul:first > li:nth-child(2) .file-name').eq(0).text(), 'Folder 2');
+    assert.equal(el.find('ul:first > li:nth-child(3) .file-name').eq(0).text(), 'File on root');
   });
 
   it('should hide nested folders', function() {
-    expect(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).text()).toBe('Folder 1a');
-    expect(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).parents('ul').hasClass('ng-hide')).toEqual(true);
+    assert.equal(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).text(), 'Folder 1a');
+    assert.isTrue(el.find('ul:first > li:nth-child(1) li .file-name').eq(0).parents('ul').hasClass('ng-hide'));
   });
 
   it('should select file on click', function() {
-    el.find('ul:first > li:nth-child(2) .file-name').eq(0).click();
-    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parents('.label-container').hasClass('selected')).toEqual(true);
+    el.find('ul:first > li:nth-child(2) input').eq(0).click();
+    $timeout.flush();
+    assert.isTrue(el.find('ul:first > li:nth-child(2) input').eq(0).parents('.label-container').hasClass('selected'));
   });
 
   it('should unselect previous file on another file click', function() {
-    el.find('ul:first > li:nth-child(2) .file-name').eq(0).click();
+    el.find('ul:first > li:nth-child(2) input').eq(0).click();
 
-    el.find('ul:first > li:nth-child(3) .file-name').eq(0).click();
-    expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parents('.label-container').hasClass('selected')).toEqual(false);
+    el.find('ul:first > li:nth-child(3) input').eq(0).click();
+    assert.isFalse(el.find('ul:first > li:nth-child(2) input').eq(0).parents('.label-container').hasClass('selected'));
+  });
+
+  it('should open/close tree on folder toggle', function() {
+    assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope ng-hide'));
+    $(el.find('ul:first > li:nth-child(2) .label-container:first-child .folder-toggle').get(0)).trigger('click');
+    assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope'));
   });
 
   it('should open/close tree on folder double click', function() {
-    //console.log(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parent().next().attr('class'));
-    //expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parent().next().hasClass('ng-hide')).toEqual(true);
-
-    //el.find('ul:first > li:nth-child(2) .file-name').eq(0).dblclick();
-
-    //expect(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parent().next().hasClass('ng-hide')).toEqual(false);
-
-    //console.log(el.find('ul:first > li:nth-child(2) .file-name').eq(0).parent().next().attr('class'));
+    assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope ng-hide'));
+    $(el.find('ul:first > li:nth-child(2) .label-container:first-child .file-name').get(0)).trigger('dblclick');
+    assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope'));
   });
 
 });

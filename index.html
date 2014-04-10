@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href="dist/ez-file-tree.min.css" rel="stylesheet">
+
+  <style>
+    a i {
+     padding-right: 5px;
+    }
+  </style>
+
+  <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="//code.angularjs.org/1.2.9/angular.js"></script>
+
+  <script src="src/js/ez-file-tree.js"></script>
+  <script src="dist/ez-file-tree.tpl.js"></script>
+  <script src="https://rawgithub.com/jdewit/ez-object2array/master/dist/ez-object2array.min.js"></script>
+
+
+  <script>
+    angular.module('myApp', ['ez.fileTree'])
+
+      .controller('DemoCtrl', ['$scope', '$q', '$timeout', function($scope, $q, $timeout) {
+
+        $scope.$on('ez-file-tree.check', function(e, data) {
+          alert('file checked' + data.id);
+        });
+
+        $scope.$on('ez-file-tree.uncheck', function(e, data) {
+          alert('file unchecked' + data.id);
+        });
+
+        $scope.getChildren = function(data) {
+          var deferred = $q.defer();
+
+          console.log('simulate http request to get children for', data);
+
+          $timeout(function() {
+            var words = ['Rock', 'Paper', 'Scissor', 'airplane', 'bulldozer', 'guitar', 'walking', 'this', 'makes', 'no', 'sense', 'why', 'you', 'are', 'playing', 'move', 'get', 'out', 'sausage', 'blubber', 'pencil', 'cloud', 'moon', 'water', 'computer', 'school', 'network', 'hammer', 'walking', 'violently', 'mediocre', 'literature', 'chair', 'two', 'window', 'cords', 'musical', 'zebra', 'xylophone', 'penguin', 'home', 'dog', 'final', 'ink', 'teacher', 'fun', 'website', 'banana', 'uncle', 'softly', 'mega', 'ten', 'awesome', 'attatch', 'blue', 'internet', 'bottle', 'tight', 'zone', 'tomato', 'prison', 'hydro', 'cleaning', 'telivision', 'send', 'frog', 'cup', 'book', 'zooming', 'falling', 'evily']; 
+            var count = Math.floor(Math.random()*10);
+            var children = [];
+
+            for (var i=0; i < count; i++) {
+              children.push({
+                id: Math.floor(Math.random()*1111),
+                name: words[Math.floor(Math.random()*60)] + ' ' + words[Math.floor(Math.random()*60)],
+                type: (i + 1) % 2 ? 'folder' : 'file'
+              });
+            }
+
+            deferred.resolve(children);
+          }, 300);
+
+          return deferred.promise;
+        };
+
+        $scope.folder = {
+          id: 'root',
+          name: 'Root',
+          type: "folder",
+          children: [
+            {
+              id: "Folder 1",
+              name: "1",
+              type: "folder",
+              children: [
+                {
+                  id: "Folder 1a",
+                  name: "1a",
+                  type: "folder",
+                  children: [
+                    {
+                      id: "1a1",
+                      name: "1a1",
+                      type: "file"
+                    },
+                    {
+                      id: "1a2",
+                      name: "1a2",
+                      type: "folder"
+                    },
+                    {
+                      id: "1a2",
+                      name: "1a2",
+                      type: "file"
+                    }
+                  ]
+                },
+                {
+                  id: "1b",
+                  type: "file",
+                  name: "1b"
+                },
+                {
+                  id: "1c",
+                  type: "file",
+                  name: "1c"
+                }
+              ]
+            },
+            {
+              id: "Folder 2",
+              name: "2",
+              type: "folder",
+              children: [
+                {
+                  id: "2a",
+                  name: "2a",
+                  type: "folder",
+                  children: [
+                    {
+                      id: "2a1",
+                      type: "file",
+                      name: "2a1"
+                    },
+                    {
+                      id: "2a2",
+                      type: "file",
+                      name: "2a2"
+                    },
+                    {
+                      id: "2a2",
+                      type: "file",
+                      name: "2a2"
+                    }
+                  ]
+                },
+                {
+                  id: "2b",
+                  type: "file",
+                  name: "2b"
+                },
+                {
+                  id: "2c",
+                  type: "file",
+                  name: "2c"
+                }
+              ]
+            },
+            {
+              id: "Root file",
+              type: "file",
+              name: "Root file",
+            }
+          ]
+        };
+
+        $scope.folder2 = {
+          id: 'root',
+          name: 'Root',
+          children: [
+            {
+              id: 1,
+              name: 'random',
+              type: 'folder'
+            }
+          ]
+        };
+
+        $scope.folder3 = {
+          id: 'root',
+          name: 'Root',
+          children: {
+            '1': {
+              id: 1,
+              name: 'random',
+              type: 'folder'
+            },
+            '2': {
+              id: 2,
+              name: 'other',
+              type: 'file'
+            }
+          }
+        };
+
+      }])
+
+      .filter('stringify', function() {
+        function getSerialize (fn, decycle) {
+          var seen = [], keys = [];
+          decycle = decycle || function(key, value) {
+          return '[Parent REFERENCE]: ' + value.id;
+          };
+          return function(key, value) {
+            var ret = value;
+            if (typeof value === 'object' && value) {
+              if (seen.indexOf(value) !== -1)
+                ret = decycle(key, value);
+              else {
+                seen.push(value);
+                keys.push(key);
+              }
+            }
+            if (fn) ret = fn(key, ret);
+            return ret;
+          }
+        }
+
+        function getPath (value, seen, keys) {
+          var index = seen.indexOf(value);
+          var path = [ keys[index] ];
+          for (index--; index >= 0; index--) {
+            if (seen[index][ path[0] ] === value) {
+              value = seen[index];
+              path.unshift(keys[index]);
+            }
+          }
+          return '~' + path.join('.');
+        }
+
+        function stringify(obj, fn, spaces, decycle) {
+          return JSON.stringify(obj, getSerialize(fn, decycle), spaces);
+        }
+
+        stringify.getSerialize = getSerialize;
+
+        return function(ob) {
+          return stringify(ob, undefined, 4);
+        };
+      })
+    ;
+
+  </script>
+
+</head>
+
+<body ng-app="myApp">
+
+  <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Ez-File-Tree</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" ng-controller="DemoCtrl">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#demo1" data-toggle="tab">Demo 1</a></li>
+      <li><a href="#demo2" data-toggle="tab">Demo 2</a></li>
+      <li><a href="#demo3" data-toggle="tab">Demo 3</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div class="tab-pane active" id="demo1">
+        <div class="row">
+          <div class="col-lg-6">
+            <h3>Folder 1</h3>
+            <div ez-file-tree="folder"></div>
+          </div>
+          <div class="col-lg-6">
+            <h5>Folder1 Dump</h5>
+            <pre style="font-size: 10px;">{{ folder | stringify }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" id="demo2">
+        <div class="row">
+          <div class="col-lg-6">
+            <h3>Folder 2</h3>
+            <div ez-file-tree="folder2" get-children="getChildren" data-multi-select="true" data-enable-checking="true"></div>
+          </div>
+          <div class="col-lg-6">
+            <h5>Folder2 Dump</h5>
+            <pre style="font-size: 10px;">{{ folder2 | stringify }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" id="demo3">
+        <div class="row">
+          <div class="col-lg-6">
+            <h3>Folder 3</h3>
+            <div ez-file-tree="folder3" data-get-children="getChildren"></div>
+          </div>
+          <div class="col-lg-6">
+            <h5>Folder3 Dump</h5>
+            <pre style="font-size: 10px;">{{ folder3 | stringify }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" id="settings">
+      
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

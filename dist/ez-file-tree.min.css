@@ -36,9 +36,11 @@
   display: inline-block;
   vertical-align: middle;
   position: relative;
+  padding: 0 5px;
 }
-.ez-file-tree .file-name i {
-  padding-right: 5px;
+.ez-file-tree label {
+  cursor: pointer;
+  font-weight: normal;
 }
 .ez-file-tree:not(.checking-enabled) .label-container.selected .file-name {
   background-color: #006dcc;

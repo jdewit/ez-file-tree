@@ -11,11 +11,11 @@
     "bower_components"
   ],
   "devDependencies": {
-    "jquery": "~2.0.3",
-    "angular": "1.2.9",
-    "angular-mocks": "*"
+    "angular-mocks": "*",
+    "jquery": "~2.1.0"
   },
   "dependencies": {
-    "ez-object2array": "~0.0.1"
+    "angular": "1.2.16",
+    "ez-object2array": ""
   }
 }
