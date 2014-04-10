@@ -45,7 +45,12 @@
         scope.disableSelect = false;
 
 
-        scope.tree._selectedFiles = {};
+        if (multiple) {
+          scope.tree._selectedFiles = {};
+        } else {
+          scope.tree._selectedFile = null;
+        }
+
         scope.tree._activeFiles = {};
 
         scope.toggle = function(e, data) {
