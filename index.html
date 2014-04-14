@@ -36,20 +36,38 @@
 
         $scope.getChildren = function(data) {
           var deferred = $q.defer();
+          var children;
+
+          var returnArray = Math.floor(Math.random()*10) % 2 === 0;
 
           console.log('simulate http request to get children for', data);
 
           $timeout(function() {
-            var words = ['Rock', 'Paper', 'Scissor', 'airplane', 'bulldozer', 'guitar', 'walking', 'this', 'makes', 'no', 'sense', 'why', 'you', 'are', 'playing', 'move', 'get', 'out', 'sausage', 'blubber', 'pencil', 'cloud', 'moon', 'water', 'computer', 'school', 'network', 'hammer', 'walking', 'violently', 'mediocre', 'literature', 'chair', 'two', 'window', 'cords', 'musical', 'zebra', 'xylophone', 'penguin', 'home', 'dog', 'final', 'ink', 'teacher', 'fun', 'website', 'banana', 'uncle', 'softly', 'mega', 'ten', 'awesome', 'attatch', 'blue', 'internet', 'bottle', 'tight', 'zone', 'tomato', 'prison', 'hydro', 'cleaning', 'telivision', 'send', 'frog', 'cup', 'book', 'zooming', 'falling', 'evily']; 
-            var count = Math.floor(Math.random()*10);
-            var children = [];
+            if (returnArray) { // filepicker accepts both arrays & objects 
+              children = [];
+            } else {
+              children = {};
+            }
 
-            for (var i=0; i < count; i++) {
-              children.push({
-                id: Math.floor(Math.random()*1111),
-                name: words[Math.floor(Math.random()*60)] + ' ' + words[Math.floor(Math.random()*60)],
-                type: (i + 1) % 2 ? 'folder' : 'file'
-              });
+            if (typeof data._parent === 'undefined' || typeof data._parent._parent === 'undefined' || typeof data._parent._parent._parent === 'undefined' || typeof data._parent._parent._parent._parent === 'undefined' || typeof data._parent._parent._parent._parent._parent === 'undefined') { // cap depth at 4
+
+              var words = ['Rock', 'Paper', 'Scissor', 'airplane', 'bulldozer', 'guitar', 'walking', 'this', 'makes', 'no', 'sense', 'why', 'you', 'are', 'playing', 'move', 'get', 'out', 'sausage', 'blubber', 'pencil', 'cloud', 'moon', 'water', 'computer', 'school', 'network', 'hammer', 'walking', 'violently', 'mediocre', 'literature', 'chair', 'two', 'window', 'cords', 'musical', 'zebra', 'xylophone', 'penguin', 'home', 'dog', 'final', 'ink', 'teacher', 'fun', 'website', 'banana', 'uncle', 'softly', 'mega', 'ten', 'awesome', 'attatch', 'blue', 'internet', 'bottle', 'tight', 'zone', 'tomato', 'prison', 'hydro', 'cleaning', 'telivision', 'send', 'frog', 'cup', 'book', 'zooming', 'falling', 'evily']; 
+              var count = Math.floor(Math.random()*10);
+              var child;
+
+              for (var i=0; i < count; i++) {
+                child = {
+                  id: Math.floor(Math.random()*1111),
+                  name: words[Math.floor(Math.random()*60)] + ' ' + words[Math.floor(Math.random()*60)],
+                  type: (i + 1) % 2 ? 'folder' : 'file'
+                };
+
+                if (returnArray) {
+                  children.push(child);
+                } else {
+                  children[child.id] = child;
+                }
+              }
             }
 
             deferred.resolve(children);
