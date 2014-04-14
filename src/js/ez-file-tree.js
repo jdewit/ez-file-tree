@@ -7,7 +7,8 @@
     enableChecking: false, // show a checkbox beside each file
     enableFolderSelection: true, // allow folders to be selected
     multiSelect: false, // allow multiple files to be selected
-    recursiveSelect: true, // recursively select/unselect a folders children
+    recursiveSelect: false, // recursively select a folders children
+    recursiveUnselect: true, // recursively unselect a folders children
     icons: {
       chevronRight: 'fa fa-chevron-right',
       chevronDown: 'fa fa-chevron-down',
@@ -119,7 +120,7 @@
           var deactivate = function(file) {
             var active = false;
 
-            if (file.children && hasChildrenSelected(file)) {
+            if (file[scope.config.childrenField] && hasChildrenSelected(file)) {
               active = true;
             }
 
@@ -134,6 +135,23 @@
             }
           };
 
+
+          /**
+           * Recursively select a folders children
+           *
+           * @param {object} folder A folder object
+           */
+          var selectChildren = function(folder) {
+            for (var key in folder[scope.config.childrenField]) {
+              folder[scope.config.childrenField][key]._selected = true;
+              folder[scope.config.childrenField][key]._active = true;
+
+              if (scope.isFolder(folder[scope.config.childrenField][key])) {
+                selectChildren(folder[scope.config.childrenField][key]);
+              }
+            }
+          };
+
           /**
            * Select a file
            *
@@ -141,10 +159,8 @@
            * @emits 'ez-file-tree.select' event
            */
           var select = function(file) {
-            if (!scope.config.enableFolderSelection) {
-              if (isFolder(file)) { // don't allow folders to be selected
-                return;
-              }
+            if (!scope.config.enableFolderSelection && scope.isFolder(file)) { // don't allow folders to be selected
+              return;
             }
 
             if (scope.config.multiSelect) {
@@ -158,6 +174,10 @@
 
             scope.$emit('ez-file-tree.select', file);
             activate(file);
+
+            if (scope.config.recursiveSelect && scope.isFolder(file)) {
+              selectChildren(file);
+            }
           };
 
           /**
@@ -178,6 +198,12 @@
             }
 
             deactivate(file);
+
+            if (scope.config.recursiveUnselect && scope.isFolder(file)) {
+              for (var key in file[scope.config.childrenField]) {
+                unselect(file[scope.config.childrenField][key]);
+              }
+            }
           };
 
           /**
@@ -204,7 +230,7 @@
            * @return {boolean}
            */
           scope.isFolder = function(file) {
-            return (typeof file.children !== undefined) || (file[scope.config.typeField] === scope.config.folderType);
+            return file[scope.config.typeField] === scope.config.folderType;
           };
 
           /**
@@ -218,24 +244,26 @@
               return;
             }
 
-            scope.disableSelect = true;
-            $timeout(function() {
-              scope.disableSelect = false;
-            }, 500);
+            if (e) { // wait for possible dbl click
+              scope.disableSelect = true;
+              $timeout(function() {
+                scope.disableSelect = false;
+              }, 500);
+            }
 
             file._open = !file._open;
 
-            if (!file.children || (file.children && !file.children.length)) {
-              if (!scope.getChildren) {
-                throw new Error('You must add a getChildren attribute');
+            if (!file[scope.config.childrenField] || (file[scope.config.childrenField] && !file[scope.config.childrenField].length)) {
+              if (typeof scope.getChildren === 'undefined') {
+                throw new Error('You must add a getChildren method to the directive scope or hard code a children field on your folder objects.');
               }
 
-              scope.getChildren(file).then(function(children) {
+              return scope.getChildren(file).then(function(children) { // call getChildren method that the user has defined
                 for (var key in children) {
                   children[key]._parent = file;
                 }
 
-                file.children = children;
+                file[scope.config.childrenField] = children;
               });
             }
           };

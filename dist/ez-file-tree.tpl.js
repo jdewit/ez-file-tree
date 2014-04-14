@@ -22,8 +22,10 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
     "  <label>\n" +
     "    <input type=\"checkbox\" ng-checked=\"data._selected\" ng-click=\"select($event, data)\" ng-show=\"showCheckbox(data)\"/>\n" +
     "    <span ng-dblclick=\"toggle($event, data)\">\n" +
-    "      <i ng-class=\"config.icons.folder\" data-ng-show=\"isFolder(data)\"></i>\n" +
-    "      <i ng-class=\"config.icons.file\" data-ng-show=\"!isFolder(data)\"></i>\n" +
+    "      <span class=\"icon-container\">\n" +
+    "        <i ng-class=\"config.icons.folder\" ng-show=\"isFolder(data)\"></i>\n" +
+    "        <i ng-class=\"config.icons.file\" ng-show=\"!isFolder(data)\"></i>\n" +
+    "      </span>\n" +
     "      <span class=\"file-name\">{{data.name}}</span>\n" +
     "    </span>\n" +
     "  </label>\n" +

@@ -114,7 +114,8 @@ describe('ez-file-tree', function() {
       enableChecking: false,
       enableFolderSelection: true,
       multiSelect: false,
-      recursiveSelect: true,
+      recursiveSelect: false,
+      recursiveUnselect: true,
       icons: {
         chevronRight: 'fa fa-chevron-right',
         chevronDown: 'fa fa-chevron-down',
