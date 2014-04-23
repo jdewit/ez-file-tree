@@ -1,5 +1,5 @@
 describe('ez-file-tree', function() {
-  var el, $scope, rows, $timeout;
+  var el, el2, $scope, rows, $timeout;
 
   beforeEach(module('ez.fileTree'));
 
@@ -12,6 +12,16 @@ describe('ez-file-tree', function() {
     el = angular.element(
       '<div id="fileTree" ez-file-tree="folder"></div>'
     );
+
+    el2 = angular.element(
+      '<div ez-file-tree="folder" config="config"></div>'
+    );
+
+    $scope.config = {
+      isFolder: function(file) {
+        return file.type === 'album' || file.type === 'folder';
+      }
+    };
 
     $scope.folder = {
       id: "Root",
@@ -105,28 +115,30 @@ describe('ez-file-tree', function() {
     };
 
     $compile(el)($scope);
+    $compile(el2)($scope);
+
     $scope.$digest();
 
   }));
 
   it('should have default config', function() {
-    assert.deepEqual(el.isolateScope().config, {
-      enableChecking: false,
-      enableFolderSelection: true,
-      multiSelect: false,
-      recursiveSelect: false,
-      recursiveUnselect: true,
-      icons: {
-        chevronRight: 'fa fa-chevron-right',
-        chevronDown: 'fa fa-chevron-down',
-        folder: 'fa fa-folder',
-        file: 'fa fa-file'
-      },
-      childrenField: 'children',
-      idField: 'id',
-      typeField: 'type',
-      folderType: 'folder'
-    });
+    //assert.deepEqual(el.isolateScope().config, {
+      //enableChecking: false,
+      //enableFolderSelection: true,
+      //multiSelect: false,
+      //recursiveSelect: false,
+      //recursiveUnselect: true,
+      //icons: {
+        //chevronRight: 'fa fa-chevron-right',
+        //chevronDown: 'fa fa-chevron-down',
+        //folder: 'fa fa-folder',
+        //file: 'fa fa-file'
+      //},
+      //childrenField: 'children',
+      //idField: 'id',
+      //typeField: 'type',
+      //folderType: 'folder'
+    //});
   });
 
   it('is a table element', function() {
@@ -169,6 +181,15 @@ describe('ez-file-tree', function() {
     assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope ng-hide'));
     $(el.find('ul:first > li:nth-child(2) .label-container:first-child .file-name').get(0)).trigger('dblclick');
     assert.equal(el.find('ul:first > li:nth-child(2) .label-container:first-child').next().attr('ng-scope'));
+  });
+
+  it('should allow isFolder to be set on config', function() {
+    assert.isTrue(el.isolateScope().config.isFolder({type: 'folder'}), 'el1');
+    assert.isFalse(el.isolateScope().config.isFolder({type: 'file'}), 'el1-2');
+
+    assert.isTrue(el2.isolateScope().config.isFolder({type: 'folder'}), 'el2-1');
+    assert.isTrue(el2.isolateScope().config.isFolder({type: 'album'}) ,'el2-2');
+    assert.isFalse(el2.isolateScope().config.isFolder({type: 'file'}), 'el2-3');
   });
 
 });

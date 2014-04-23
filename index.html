@@ -35,10 +35,9 @@
         });
 
         $scope.getChildren = function(data) {
-          var deferred = $q.defer();
           var children;
-
           var returnArray = Math.floor(Math.random()*10) % 2 === 0;
+          var deferred = $q.defer();
 
           console.log('simulate http request to get children for', data);
 
@@ -296,7 +295,7 @@
         <div class="row">
           <div class="col-lg-6">
             <h3>Folder 3</h3>
-            <div ez-file-tree="folder3" data-get-children="getChildren"></div>
+            <div ez-file-tree="folder3" data-get-children="getChildren" data-enable-checking="false"></div>
           </div>
           <div class="col-lg-6">
             <h5>Folder3 Dump</h5>

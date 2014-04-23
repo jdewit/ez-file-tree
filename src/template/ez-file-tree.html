@@ -1,16 +1,16 @@
 <div class="label-container" ng-class="{selected: data._selected}">
 
   <span class="folder-toggle" data-ng-click="toggle($event, data)">
-    <i ng-class="config.icons.chevronRight" title="Open folder" data-ng-show="!data._open && isFolder(data)"></i>
-    <i ng-class="config.icons.chevronDown" title="Close folder" data-ng-show="data._open && isFolder(data)"></i>
+    <i ng-class="config.icons.chevronRight" title="Open folder" data-ng-show="!data._open && config.isFolder(data)"></i>
+    <i ng-class="config.icons.chevronDown" title="Close folder" data-ng-show="data._open && config.isFolder(data)"></i>
   </span>
 
   <label>
     <input type="checkbox" ng-checked="data._selected" ng-click="select($event, data)" ng-show="showCheckbox(data)"/>
     <span ng-dblclick="toggle($event, data)">
       <span class="icon-container">
-        <i ng-class="config.icons.folder" ng-show="isFolder(data)"></i>
-        <i ng-class="config.icons.file" ng-show="!isFolder(data)"></i>
+        <i ng-class="config.icons.folder" ng-show="config.isFolder(data)"></i>
+        <i ng-class="config.icons.file" ng-show="!config.isFolder(data)"></i>
       </span>
       <span class="file-name">{{data.name}}</span>
     </span>

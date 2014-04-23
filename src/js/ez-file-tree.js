@@ -6,6 +6,7 @@
   .constant('EzFileTreeConfig', {
     enableChecking: false, // show a checkbox beside each file
     enableFolderSelection: true, // allow folders to be selected
+    enableFileSelection: true, // allow files to be selected
     multiSelect: false, // allow multiple files to be selected
     recursiveSelect: false, // recursively select a folders children
     recursiveUnselect: true, // recursively unselect a folders children
@@ -17,11 +18,12 @@
     },
     childrenField: 'children', // the field name to recurse
     idField: 'id', // the files id field
-    typeField: 'type', // the files type field use to check if its a file/folder
-    folderType: 'folder' // a file with {type: "folder"} is a folder
+    isFolder: function(file) { // function that checks if file is a folder
+      return file.type === 'folder';
+    }
   })
 
-  .directive('ezFileTree', ['$compile', '$timeout', 'EzFileTreeConfig', function($compile, $timeout, EzFileTreeConfig) {
+  .directive('ezFileTree', ['$compile', '$timeout', '$parse', 'EzFileTreeConfig', function($compile, $timeout, $parse, EzFileTreeConfig) {
     return {
       restrict: 'EA',
       replace: true,
@@ -36,7 +38,7 @@
         var config = angular.extend({}, EzFileTreeConfig);
         for (var key in EzFileTreeConfig) {
           if (typeof attrs[key] !== 'undefined') {
-            config[key] = attrs[key];
+            config[key] = $parse(attrs[key])();
           }
         }
 
@@ -146,7 +148,7 @@
               folder[scope.config.childrenField][key]._selected = true;
               folder[scope.config.childrenField][key]._active = true;
 
-              if (scope.isFolder(folder[scope.config.childrenField][key])) {
+              if (scope.config.isFolder(folder[scope.config.childrenField][key])) {
                 selectChildren(folder[scope.config.childrenField][key]);
               }
             }
@@ -159,7 +161,12 @@
            * @emits 'ez-file-tree.select' event
            */
           var select = function(file) {
-            if (!scope.config.enableFolderSelection && scope.isFolder(file)) { // don't allow folders to be selected
+            scope.$emit('ez-file-tree.select', file);
+            if (!scope.config.enableFolderSelection && scope.config.isFolder(file)) { // don't allow folders to be selected
+              return;
+            }
+
+            if (!scope.config.enableFileSelection && !scope.config.isFolder(file)) { // don't allow files to be selected
               return;
             }
 
@@ -172,10 +179,9 @@
 
             file._selected = true;
 
-            scope.$emit('ez-file-tree.select', file);
             activate(file);
 
-            if (scope.config.recursiveSelect && scope.isFolder(file)) {
+            if (scope.config.recursiveSelect && scope.config.isFolder(file)) {
               selectChildren(file);
             }
           };
@@ -199,7 +205,7 @@
 
             deactivate(file);
 
-            if (scope.config.recursiveUnselect && scope.isFolder(file)) {
+            if (scope.config.recursiveUnselect && scope.config.isFolder(file)) {
               for (var key in file[scope.config.childrenField]) {
                 unselect(file[scope.config.childrenField][key]);
               }
@@ -222,17 +228,6 @@
             }
           };
 
-
-          /**
-           * Check if a file is a folder
-           *
-           * @param {object} file A file object
-           * @return {boolean}
-           */
-          scope.isFolder = function(file) {
-            return file[scope.config.typeField] === scope.config.folderType;
-          };
-
           /**
            * Opens/closes a folder
            *
@@ -240,7 +235,7 @@
            * @param {object} file A file object
            */
           scope.toggle = function(e, file) {
-            if (!scope.isFolder(file)) {
+            if (!scope.config.isFolder(file)) {
               return;
             }
 
@@ -258,9 +253,19 @@
                 throw new Error('You must add a getChildren method to the directive scope or hard code a children field on your folder objects.');
               }
 
-              return scope.getChildren(file).then(function(children) { // call getChildren method that the user has defined
+              scope.getChildren(file).then(function(children) { // call getChildren method that the user has defined
                 for (var key in children) {
                   children[key]._parent = file;
+
+                  if (scope.config.multiSelect) {
+                    if (typeof scope.tree._selectedFiles[children[key][scope.config.idField]] !== 'undefined') {
+                      children[key]._selected = true;
+                    }
+                  } else {
+                    if (scope.tree._selectedFile && scope.tree._selectedFile[scope.config.idField] === children[key][scope.config.idField]) {
+                      children[key]._selected = true;
+                    }
+                  }
                 }
 
                 file[scope.config.childrenField] = children;
@@ -275,7 +280,7 @@
            * @returns {boolean}
            */
           scope.showCheckbox = function(file) {
-            if (!scope.config.enableChecking || (scope.isFolder(file) && !config.enableFolderSelection)) {
+            if (!scope.config.enableChecking || (scope.config.isFolder(file) && !config.enableFolderSelection)) {
               return false;
             }
 
