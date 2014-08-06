@@ -15,7 +15,7 @@
     "jquery": "~2.1.0"
   },
   "dependencies": {
-    "angular": "1.2.16",
+    "angular": "1.2.*",
     "ez-object2array": ""
   }
 }
