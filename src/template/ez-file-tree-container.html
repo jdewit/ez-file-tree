@@ -1,6 +1,9 @@
 <div class="ez-file-tree" ng-class="{'checking-enabled': config.enableChecking}">
-  <ul>
+  <ul ng-if="data.showTree" class="file-tree-animate">
     <li ng-repeat="data in tree[config.childrenField] | object2array | orderBy:['-type', 'name']" ng-include="'ez-file-tree.html'"></li>
   </ul>
-</div>
 
+  <div ng-if="!data.showTree">
+    <p class="lead">Loading File Tree&hellip;</p>
+  </div>
+</div>

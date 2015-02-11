@@ -16,25 +16,14 @@
   "scripts": {},
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-jshint": "~0.6.4",
     "grunt-contrib-concat": "~0.1.3",
     "grunt-contrib-jasmine": "~0.4.2",
     "grunt-contrib-less": "~0.8.1",
-    "karma-script-launcher": "~0.1.0",
-    "karma-firefox-launcher": "~0.1.0",
-    "karma-chrome-launcher": "~0.1.0",
-    "karma-jasmine": "~0.1.3",
-    "karma-requirejs": "~0.2.0",
-    "karma-chai": "*",
-    "karma-phantomjs-launcher": "~0.1.0",
-    "karma-mocha": "*",
-    "karma": "*",
     "grunt-bump": "0.0.11",
     "grunt-angular-templates": "~0.4.7",
-    "grunt-karma": "~0.6.2",
-    "grunt-shell": "~0.6.1",
-    "karma-coverage": "~0.1.4"
+    "grunt-shell": "~0.6.1"
   }
 }
