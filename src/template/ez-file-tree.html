@@ -9,7 +9,8 @@
     <input type="checkbox" ng-checked="data._selected" ng-click="select($event, data)" ng-show="showCheckbox(data)"/>
     <span ng-dblclick="toggle($event, data)">
       <span class="icon-container">
-        <i ng-class="config.icons.folder" ng-show="config.isFolder(data)"></i>
+        <i ng-class="config.icons.folder" ng-show="config.isFolder(data) && !data._open"></i>
+        <i ng-class="config.icons.openFolder" ng-show="config.isFolder(data) && data._open"></i>
         <i ng-class="config.icons.file" ng-show="!config.isFolder(data)"></i>
       </span>
       <span class="file-name">{{data.name}}</span>

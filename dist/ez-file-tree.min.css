@@ -48,3 +48,17 @@
   background-color: #006dcc;
   color: #fff;
 }
+.ez-file-tree .file-tree-animate.ng-enter {
+  -webkit-transition: opacity 1s ease 0.1s;
+  -moz-transition: opacity 1s ease 0.1s;
+  -o-transition: opacity 1s ease 0.1s;
+  transition: opacity 1s ease 0.1s;
+}
+.ez-file-tree .file-tree-animate.ng-enter,
+.ez-file-tree .file-tree-animate.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+.ez-file-tree .file-tree-animate.ng-leave,
+.ez-file-tree .file-tree-animate.ng-enter.ng-enter-active {
+  opacity: 1;
+}

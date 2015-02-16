@@ -14,16 +14,31 @@
       chevronRight: 'fa fa-chevron-right',
       chevronDown: 'fa fa-chevron-down',
       folder: 'fa fa-folder',
+      openFolder: 'fa fa-folder-open',
       file: 'fa fa-file'
     },
     childrenField: 'children', // the field name to recurse
     idField: 'id', // the files id field
     isFolder: function(file) { // function that checks if file is a folder
       return file.type === 'folder';
-    }
+    },
+    preSelect: false, // pre-select the passed in file/folder
+    ancestorField: 'ancestors', // the field name that includes the ancestors of a file; required for pre-selection to work (format: flat, ordered array of folder objects with root folder being first, next folder down being second, and so forth)
+    showRoot: false // show the root folder in the file tree
   })
 
-  .directive('ezFileTree', ['$compile', '$timeout', '$parse', 'EzFileTreeConfig', function($compile, $timeout, $parse, EzFileTreeConfig) {
+  .directive('ezFileTree', [
+    '$compile',
+    '$timeout',
+    '$parse',
+    'EzFileTreeConfig',
+    function(
+      $compile,
+      $timeout,
+      $parse,
+      EzFileTreeConfig
+    ) {
+
     return {
       restrict: 'EA',
       replace: true,
@@ -43,9 +58,30 @@
         }
 
         return function (scope) {
+          scope.data = {
+            showTree: false
+          };
+
           var init = function() {
             scope.config = angular.extend(config, scope.config); // merge scope config with the rest of the config
             scope.disableSelect = false;
+
+            var cachedSelectedFile = angular.extend({}, scope.tree._selectedFile);
+            delete scope.tree._selectedFile;
+
+            if (scope.config.showRoot) {
+              var wrappedTree = {};
+
+              wrappedTree[scope.config.idField] = 'root';
+              wrappedTree.name = 'root';
+              wrappedTree[scope.config.childrenField] = {};
+
+              wrappedTree[scope.config.childrenField][scope.tree[scope.config.idField]] = $.extend(true, {}, scope.tree);
+              wrappedTree[scope.config.childrenField][scope.tree[scope.config.idField]]._open = true;
+              wrappedTree[scope.config.childrenField][scope.tree[scope.config.idField]].type = 'folder';
+
+              scope.tree = wrappedTree;
+            }
 
             if (scope.config.multiSelect) {
               scope.tree._selectedFiles = {};
@@ -57,6 +93,71 @@
 
             if (scope.tree[scope.config.childrenField]) {
               setParentOnChildren(scope.tree, true);
+
+              if (scope.config.preSelect) {
+                scope.findAndSelectFile(cachedSelectedFile);
+              } else {
+                scope.data.showTree = true;
+              }
+            }
+          };
+
+          scope.folderFindAndSelect = function(folder, file, ancestors) {
+            if (ancestors.length > 1) {
+              scope.recursiveFindAndSelect(folder, file, ancestors.slice(1));
+            } else {
+              for (var k in folder[scope.config.childrenField]) {
+                var innerFolder = folder[scope.config.childrenField][k];
+
+                if (k === file.id) {
+                  select(innerFolder);
+
+                  scope.data.showTree = true;
+
+                  return;
+                }
+              }
+            }
+          };
+
+          scope.recursiveFindAndSelect = function(parentFolder, file, ancestors) {
+            var folder = parentFolder[scope.config.childrenField][ancestors[0][scope.config.idField]];
+
+            if (!folder._open) {
+
+              scope.toggle(null, folder, function(updatedFolder) {
+                scope.folderFindAndSelect(updatedFolder, file, ancestors);
+              });
+
+            } else {
+              scope.folderFindAndSelect(folder, file, ancestors);
+            }
+          };
+
+          /**
+           * Select pre-selected file (may require traversal to locate)
+           *
+           * @param {object} file A file object
+           */
+          scope.findAndSelectFile = function(file) {
+            for (var k in scope.tree[scope.config.childrenField]) {
+              var rootFolder = scope.tree[scope.config.childrenField][k];
+
+              if (scope.config.ancestorField in file) {
+                var ancestors = file[scope.config.ancestorField];
+
+                if (ancestors.length === 0) {
+                  if (k === file.id) {
+                    select(rootFolder);
+
+                    scope.data.showTree = true;
+                    
+                    return;
+                  }
+                } else {
+                  scope.recursiveFindAndSelect(scope.tree, file, ancestors);
+                }
+              }
             }
           };
 
@@ -231,10 +332,11 @@
           /**
            * Opens/closes a folder
            *
-           * @param {object} e A click event
-           * @param {object} file A file object
+           * @param {object}   e        A click event
+           * @param {object}   file     A file object
+           * @param {function} callback An optional callback function
            */
-          scope.toggle = function(e, file) {
+          scope.toggle = function(e, file, callback) {
             if (!scope.config.isFolder(file)) {
               return;
             }
@@ -269,6 +371,10 @@
                 }
 
                 file[scope.config.childrenField] = children;
+
+                if (callback) {
+                  callback(file);
+                }
               });
             }
           };
