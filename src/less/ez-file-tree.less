@@ -50,6 +50,15 @@
     cursor: pointer;
     font-weight: normal;
     min-width: 120px;
+
+    &.unselectable {
+      cursor: default;
+      color: #999;
+
+      i {
+        cursor: default;
+      }
+    }
   }
 
   &:not(.checking-enabled) {
