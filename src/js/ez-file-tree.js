@@ -24,7 +24,8 @@
     },
     preSelect: false, // pre-select the passed in file/folder
     ancestorField: 'ancestors', // the field name that includes the ancestors of a file; required for pre-selection to work (format: flat, ordered array of folder objects with root folder being first, next folder down being second, and so forth)
-    showRoot: false // show the root folder in the file tree
+    showRoot: false, // show the root folder in the file tree
+    movingFolder: null // the id of folder being moved; neither it not any enclosed folder can be chosen
   })
 
   .directive('ezFileTree', [
@@ -271,6 +272,11 @@
               return;
             }
 
+            // cannot select a folder if that folder is being moved
+            if (scope.config.movingFolder && scope.config.movingFolder.length && file[scope.config.idField] === scope.config.movingFolder) {
+              return;
+            }
+
             if (scope.config.multiSelect) {
               scope.tree._selectedFiles[file[scope.config.idField]] = file;
             } else {
@@ -338,6 +344,11 @@
            */
           scope.toggle = function(e, file, callback) {
             if (!scope.config.isFolder(file)) {
+              return;
+            }
+
+            // cannot open/close a folder if that folder is being moved
+            if (scope.config.movingFolder && scope.config.movingFolder.length && file[scope.config.idField] === scope.config.movingFolder) {
               return;
             }
 

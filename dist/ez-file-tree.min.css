@@ -41,6 +41,13 @@
   font-weight: normal;
   min-width: 120px;
 }
+.ez-file-tree label.unselectable {
+  cursor: default;
+  color: #999;
+}
+.ez-file-tree label.unselectable i {
+  cursor: default;
+}
 .ez-file-tree:not(.checking-enabled) label {
   padding: 0 5px;
 }

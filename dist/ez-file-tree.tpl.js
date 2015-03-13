@@ -17,12 +17,12 @@ angular.module('ez.fileTree').run(['$templateCache', function($templateCache) {
   $templateCache.put('ez-file-tree.html',
     "<div class=\"label-container\" ng-class=\"{selected: data._selected}\">\n" +
     "\n" +
-    "  <span class=\"folder-toggle\" data-ng-click=\"toggle($event, data)\">\n" +
-    "    <i ng-class=\"config.icons.chevronRight\" title=\"Open folder\" data-ng-show=\"!data._open && config.isFolder(data)\"></i>\n" +
-    "    <i ng-class=\"config.icons.chevronDown\" title=\"Close folder\" data-ng-show=\"data._open && config.isFolder(data)\"></i>\n" +
+    "  <span class=\"folder-toggle\" ng-click=\"toggle($event, data)\" ng-if=\"config.isFolder(data) && !(config.movingFolder && config.movingFolder == data[config.idField])\">\n" +
+    "    <i ng-class=\"config.icons.chevronRight\" title=\"Open folder\" ng-show=\"!data._open && config.isFolder(data)\"></i>\n" +
+    "    <i ng-class=\"config.icons.chevronDown\" title=\"Close folder\" ng-show=\"data._open && config.isFolder(data)\"></i>\n" +
     "  </span>\n" +
     "\n" +
-    "  <label>\n" +
+    "  <label ng-class=\"{'unselectable': (config.isFolder(data) && config.movingFolder && config.movingFolder == data[config.idField]) || (!config.isFolder(data) && !config.enableFileSelection)}\">\n" +
     "    <input type=\"checkbox\" ng-checked=\"data._selected\" ng-click=\"select($event, data)\" ng-show=\"showCheckbox(data)\"/>\n" +
     "    <span ng-dblclick=\"toggle($event, data)\">\n" +
     "      <span class=\"icon-container\">\n" +
