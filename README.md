@@ -9,7 +9,7 @@ $ bower install ez-file-tree
 
 ##Demo
 
-See a demo of index.html at http://plnkr.co/edit/fZN0Dx?p=preview
+See a demo of index.html at http://rawgit.com/jdewit/ez-file-tree/master/index.html
 
 ##Configure
 
