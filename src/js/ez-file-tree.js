@@ -152,7 +152,7 @@
                     select(rootFolder);
 
                     scope.data.showTree = true;
-                    
+
                     return;
                   }
                 } else {
@@ -257,6 +257,21 @@
           };
 
           /**
+           * Deselects folder children's
+           * @param f
+           */
+          var deselectChildren = function(f){
+            for (var key in f[scope.config.childrenField]) {
+              f[scope.config.childrenField][key]._selected = false;
+              f[scope.config.childrenField][key]._active = false;
+
+              if (scope.config.isFolder(f[scope.config.childrenField][key])) {
+                deselectChildren(f[scope.config.childrenField][key]);
+              }
+            }
+          };
+
+          /**
            * Select a file
            *
            * @params {object} file A file object
@@ -313,9 +328,7 @@
             deactivate(file);
 
             if (scope.config.recursiveUnselect && scope.config.isFolder(file)) {
-              for (var key in file[scope.config.childrenField]) {
-                unselect(file[scope.config.childrenField][key]);
-              }
+              deselectChildren(file);
             }
           };
 
